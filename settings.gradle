@@ -1,0 +1,4 @@
+rootProject.name = "x-terminal"
+include 'app'
+include 'kit'
+
