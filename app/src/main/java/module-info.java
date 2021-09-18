@@ -5,9 +5,13 @@ module cn.navclub.xtm.app {
 
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
+    requires org.slf4j;
 
     requires org.kordamp.ikonli.javafx;
     requires eu.hansolo.tilesfx;
+    requires org.bytedeco.javacv;
+    requires org.bytedeco.ffmpeg;
+    requires org.bytedeco.ffmpeg.linux.x86;
 
     opens cn.navclub.xtm.app to javafx.fxml;
 
