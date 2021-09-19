@@ -32,4 +32,13 @@ public interface WindowControllerService {
     default void onRequestClose(WindowEvent event) {
 
     }
+
+    /**
+     *
+     * 当窗口尺寸发生改变时回到该函数
+     *
+     */
+    default void windowSizeChange(double width,double height){
+
+    }
 }

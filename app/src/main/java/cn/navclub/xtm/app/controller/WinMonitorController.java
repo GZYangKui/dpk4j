@@ -1,11 +1,15 @@
 package cn.navclub.xtm.app.controller;
 
 import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.image.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.OpenCVFrameConverter;
@@ -17,9 +21,6 @@ import java.nio.ByteBuffer;
 
 import static org.bytedeco.opencv.global.opencv_imgproc.COLOR_BGR2BGRA;
 
-import static org.opencv.imgproc.Imgproc.CONTOURS_MATCH_I1;
-import static org.opencv.imgproc.Imgproc.cvtColor;
-
 
 /**
  * 远程操作主窗口
@@ -27,13 +28,16 @@ import static org.opencv.imgproc.Imgproc.cvtColor;
  * @author yangkui
  */
 public class WinMonitorController extends AbstractWindowFXMLController<BorderPane> {
-
+    @FXML
+    private HBox bBox;
+    @FXML
+    private MenuBar menuBar;
     @FXML
     private Canvas canvas;
 
-
     public WinMonitorController() {
         super("WinMonitorView.fxml");
+        this.setStyleSheet("WinMonitorViewStyle.css");
         this.getStage().setTitle("x-terminal");
         new Thread(this::initFFmpeg).start();
     }
@@ -64,20 +68,40 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
 
                 var buffer = javaCVMat.createBuffer();
 
-                var pixelBuffer = new PixelBuffer(w,h,buffer,formatByte);
+                var pixelBuffer = new PixelBuffer(w, h, buffer, formatByte);
 
                 var wi = new WritableImage(pixelBuffer);
 
 
-                Platform.runLater(()->{
+                Platform.runLater(() -> {
                     var context = this.canvas.getGraphicsContext2D();
-                    context.clearRect(0,0,this.canvas.getWidth(),this.canvas.getHeight());
-                    context.drawImage(wi,this.canvas.getWidth(),this.canvas.getHeight());
+                    context.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
+                    context.drawImage(wi, 0, 0, this.canvas.getWidth(), this.canvas.getHeight());
                 });
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void windowSizeChange(double width, double height) {
+        this.canvas.setWidth(width);
+        //重新计算画布实际高度
+        this.canvas.setHeight(this.realHei());
+    }
+
+    /**
+     *
+     * 计算画布能够伸缩最大高度
+     *
+     */
+    private double realHei() {
+        var parent = getParent();
+        var a = parent.getHeight();
+        var b = this.menuBar.getHeight();
+        var c = this.bBox.getHeight();
+        return a-b-c;
     }
 
 }

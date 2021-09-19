@@ -16,4 +16,8 @@ public class AbstractFXMLController<T extends Parent> {
     public T getParent() {
         return parent;
     }
+
+    public void setStyleSheet(String...sheets){
+        AssetsHelper.addStyleSheets(this.getParent(),sheets);
+    }
 }
