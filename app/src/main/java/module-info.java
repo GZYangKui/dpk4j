@@ -9,9 +9,16 @@ module cn.navclub.xtm.app {
 
     requires org.kordamp.ikonli.javafx;
     requires eu.hansolo.tilesfx;
+
     requires org.bytedeco.javacv;
+    requires org.bytedeco.opencv;
     requires org.bytedeco.ffmpeg;
-    requires org.bytedeco.ffmpeg.linux.x86;
+    requires org.bytedeco.javacpp;
+    requires org.bytedeco.openblas;
+
+
+    //根据各个平台自由切换
+    requires org.bytedeco.ffmpeg.linux.x86_64;
 
     opens cn.navclub.xtm.app to javafx.fxml;
 

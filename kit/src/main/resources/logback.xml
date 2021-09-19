@@ -174,11 +174,6 @@
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
-
-        <filter class="org.bytedeco.ffmpeg.global.avutil">
-            <level>DEBUG</level>
-        </filter>
-
     </appender>
 
 
@@ -269,6 +264,7 @@
     <logger name="org.apache.ibatis" level="DEBUG"/>
 
     <logger name="java.sql" level="DEBUG"/>
+    <logger name="org.bytedeco.javacpp" level="DEBUG"/>
 
     <!-- 项目 mapper 路径
 
