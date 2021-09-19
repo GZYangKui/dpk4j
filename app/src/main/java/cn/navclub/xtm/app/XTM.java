@@ -8,13 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- *
  * XTerminal程序启动类
  *
- *
  * @author yangkui
- *
  */
 public class XTM extends Application {
     private static final Logger LOG = LoggerFactory.getLogger(XTM.class);

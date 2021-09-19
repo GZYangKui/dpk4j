@@ -1,4 +1,4 @@
-package cn.navclub.xtm.kit;
+package cn.navclub.xtm.kit.proxy;
 
 
 import org.bytedeco.javacv.FFmpegFrameGrabber;
@@ -10,6 +10,14 @@ import org.slf4j.LoggerFactory;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ *
+ *
+ * 自定义{@link FFmpegFrameGrabber}代理类
+ *
+ * @author yangkui
+ *
+ */
 public class FFmpegFrameGrabberProxy {
     private static final Logger LOG = LoggerFactory.getLogger(FFmpegFrameGrabberProxy.class);
 

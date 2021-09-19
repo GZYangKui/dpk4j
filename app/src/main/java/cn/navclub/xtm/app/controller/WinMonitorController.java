@@ -3,7 +3,8 @@ package cn.navclub.xtm.app.controller;
 import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 
 import cn.navclub.xtm.app.util.FFmpegUtil;
-import cn.navclub.xtm.kit.FFmpegFrameGrabberProxy;
+import cn.navclub.xtm.kit.decode.RecordParser;
+import cn.navclub.xtm.kit.proxy.FFmpegFrameGrabberProxy;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -14,6 +15,8 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import javafx.stage.WindowEvent;
 import org.bytedeco.javacv.Frame;
+
+import java.nio.charset.StandardCharsets;
 
 
 /**
@@ -55,6 +58,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
      *
      */
     private void onReceive(Frame frame) {
+       var test =  RecordParser.create();
         var wi = FFmpegUtil.toFXImage(frame);
         Platform.runLater(() -> {
             var width = this.canvas.getWidth();
@@ -63,6 +67,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
             context.clearRect(0, 0, width, height);
             context.drawImage(wi, 0, 0, width, height);
         });
+
     }
 
     @Override

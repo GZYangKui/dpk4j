@@ -9,7 +9,7 @@ version '1.0-SNAPSHOT'
 mainClassName = 'cn.navclub.xtm.app.XTM'
 
 javafx {
-    version = '17.0.0.1'
+    version = '17'
     modules = ['javafx.controls', 'javafx.fxml','javafx.graphics']
 }
 
