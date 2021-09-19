@@ -27,8 +27,6 @@
         <Canvas fx:id="canvas"/>
     </center>
     <bottom>
-        <HBox styleClass="b-box" fx:id="bBox">
-            <Button text="测试"/>
-        </HBox>
+        <HBox styleClass="b-box" fx:id="bBox"></HBox>
     </bottom>
 </BorderPane>

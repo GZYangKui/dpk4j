@@ -26,7 +26,6 @@ public class XTM extends Application {
 
     public static void main(String[] args) {
 //        System.setProperty("org.bytedeco.javacpp.logger.debug","true");
-        LOG.info("============================");
         launch(args);
     }
 }
