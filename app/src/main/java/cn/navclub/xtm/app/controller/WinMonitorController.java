@@ -58,7 +58,6 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
      *
      */
     private void onReceive(Frame frame) {
-       var test =  RecordParser.create();
         var wi = FFmpegUtil.toFXImage(frame);
         Platform.runLater(() -> {
             var width = this.canvas.getWidth();
