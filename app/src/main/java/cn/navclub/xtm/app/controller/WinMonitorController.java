@@ -2,26 +2,18 @@ package cn.navclub.xtm.app.controller;
 
 import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 
+import cn.navclub.xtm.app.util.FFmpegUtil;
 import cn.navclub.xtm.kit.FFmpegFrameGrabberProxy;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.MenuBar;
-import javafx.scene.image.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import javafx.stage.WindowEvent;
-import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.OpenCVFrameConverter;
-import org.bytedeco.opencv.global.opencv_imgproc;
-import org.bytedeco.opencv.opencv_core.Mat;
-
-
-import java.nio.ByteBuffer;
-
-import static org.bytedeco.opencv.global.opencv_imgproc.COLOR_BGR2BGRA;
 
 
 /**
@@ -37,7 +29,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     @FXML
     private Canvas canvas;
 
-    private final FFmpegFrameGrabberProxy proxy;
+    private final FFmpegFrameGrabberProxy fProxy;
 
     public WinMonitorController() {
         super("WinMonitorView.fxml");
@@ -45,39 +37,31 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
         this.getStage().setTitle("x-terminal");
         var rect = Screen.getPrimary().getBounds();
         //初始化FFmpeg
-        this.proxy = FFmpegFrameGrabberProxy.createProxy()
-                .setConsumer(this::initFFmpeg)
+        this.fProxy = FFmpegFrameGrabberProxy.createProxy()
+                .setConsumer(this::onReceive)
                 .setFilename(":1+" + 0 + "," + 0)
                 .setImgWidth((int) rect.getWidth())
                 .setImgHeight((int) rect.getHeight())
                 .setFormat("x11grab")
                 .start();
+        this.canvas.addEventFilter(MouseEvent.ANY,event -> {
+
+        });
     }
 
-    private final Mat javaCVMat = new Mat();
-
-    private final OpenCVFrameConverter.ToMat javaCVConv = new OpenCVFrameConverter.ToMat();
-
-    private final WritablePixelFormat<ByteBuffer> formatByte = PixelFormat.getByteBgraPreInstance();
-
-
-    public void initFFmpeg(Frame frame) {
-
-        var w = frame.imageWidth;
-        var h = frame.imageHeight;
-        var mat = javaCVConv.convert(frame);
-        opencv_imgproc.cvtColor(mat, javaCVMat, COLOR_BGR2BGRA);
-
-        var buffer = javaCVMat.createBuffer();
-
-        var pixelBuffer = new PixelBuffer(w, h, buffer, formatByte);
-
-        var wi = new WritableImage(pixelBuffer);
-
+    /**
+     *
+     * 刷新视图
+     *
+     */
+    private void onReceive(Frame frame) {
+        var wi = FFmpegUtil.toFXImage(frame);
         Platform.runLater(() -> {
+            var width = this.canvas.getWidth();
+            var height = this.canvas.getHeight();
             var context = this.canvas.getGraphicsContext2D();
-            context.clearRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
-            context.drawImage(wi, 0, 0, this.canvas.getWidth(), this.canvas.getHeight());
+            context.clearRect(0, 0, width, height);
+            context.drawImage(wi, 0, 0, width, height);
         });
     }
 
@@ -91,7 +75,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     @Override
     public void onRequestClose(WindowEvent event) {
         super.onRequestClose(event);
-        this.proxy.stop();
+        this.fProxy.stop();
     }
 
     /**
