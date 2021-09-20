@@ -18,4 +18,5 @@ module cn.navclub.xtm.kit {
     exports cn.navclub.xtm.kit.util;
     exports cn.navclub.xtm.kit.proxy;
     exports cn.navclub.xtm.kit.decode;
+    exports cn.navclub.xtm.kit.proxy.impl;
 }

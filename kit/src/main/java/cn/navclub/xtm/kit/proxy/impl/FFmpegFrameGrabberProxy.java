@@ -1,6 +1,7 @@
-package cn.navclub.xtm.kit.proxy;
+package cn.navclub.xtm.kit.proxy.impl;
 
 
+import cn.navclub.xtm.kit.proxy.FFmpegProxy;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
@@ -18,7 +19,7 @@ import java.util.function.Consumer;
  * @author yangkui
  *
  */
-public class FFmpegFrameGrabberProxy {
+public final class FFmpegFrameGrabberProxy implements FFmpegProxy {
     private static final Logger LOG = LoggerFactory.getLogger(FFmpegFrameGrabberProxy.class);
 
 
@@ -42,7 +43,8 @@ public class FFmpegFrameGrabberProxy {
         this.grabberThread = new FFFGrabberThread(this);
     }
 
-    public FFmpegFrameGrabberProxy start() {
+    @Override
+    public FFmpegProxy start() {
         Objects.requireNonNull(this.format);
         Objects.requireNonNull(this.filename);
 
@@ -65,6 +67,7 @@ public class FFmpegFrameGrabberProxy {
     /**
      * 停止{@link FFmpegFrameGrabber}抓取屏幕信息
      */
+    @Override
     public void stop() {
         try {
             this.running = false;
@@ -75,9 +78,6 @@ public class FFmpegFrameGrabberProxy {
     }
 
 
-    public static FFmpegFrameGrabberProxy createProxy() {
-        return new FFmpegFrameGrabberProxy();
-    }
 
     /**
      * 封装线程用于异步执行获取屏幕抓取信息
@@ -107,48 +107,30 @@ public class FFmpegFrameGrabberProxy {
         }
     }
 
-    public FFmpegFrameGrabberProxy setImgWidth(int imgWidth) {
+    public FFmpegProxy setImgWidth(int imgWidth) {
         this.imgWidth = imgWidth;
         return this;
     }
 
-    public FFmpegFrameGrabberProxy setImgHeight(int imgHeight) {
+    public FFmpegProxy setImgHeight(int imgHeight) {
         this.imgHeight = imgHeight;
         return this;
     }
 
-    public FFmpegFrameGrabberProxy setConsumer(Consumer<Frame> consumer) {
+
+    @Override
+    public FFmpegProxy callback(Consumer<Frame> consumer) {
         this.consumer = consumer;
         return this;
     }
-
-    public FFmpegFrameGrabberProxy setFormat(String format) {
+    @Override
+    public FFmpegProxy setFormat(String format) {
         this.format = format;
         return this;
     }
-
-    public FFmpegFrameGrabberProxy setFilename(String filename) {
+    @Override
+    public FFmpegProxy setFilename(String filename) {
         this.filename = filename;
         return this;
-    }
-
-    public int getImgWidth() {
-        return imgWidth;
-    }
-
-    public int getImgHeight() {
-        return imgHeight;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public Consumer<Frame> getConsumer() {
-        return consumer;
     }
 }
