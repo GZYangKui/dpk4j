@@ -14,7 +14,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import javafx.stage.WindowEvent;
-import org.bytedeco.javacv.FFmpegLockCallback;
 import org.bytedeco.javacv.FFmpegLogCallback;
 import org.bytedeco.javacv.Frame;
 
