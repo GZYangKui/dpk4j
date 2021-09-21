@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * XTerminal程序启动类
  *
@@ -15,13 +16,15 @@ import org.slf4j.LoggerFactory;
 public class XTM extends Application {
     private static final Logger LOG = LoggerFactory.getLogger(XTM.class);
 
+    public static void main(String[] args) {
+//        System.setProperty("org.bytedeco.javacpp.logger.debug","true");
+        launch(XTM.class, args);
+    }
+
     @Override
     public void start(Stage primaryStage) {
         new WinMonitorController().openWindow();
     }
 
-    public static void main(String[] args) {
-//        System.setProperty("org.bytedeco.javacpp.logger.debug","true");
-        launch(args);
-    }
+//    Module cn.navclub.xtm.app contains package org.bytedeco.javacpp.presets, module org.bytedeco.javacpp exports package org.bytedeco.javacpp.presets to cn.navclub.xtm.app
 }

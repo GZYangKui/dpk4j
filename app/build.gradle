@@ -1,5 +1,4 @@
 plugins {
-    id 'java'
     id 'org.openjfx.javafxplugin' version '0.0.10'
 }
 
@@ -9,10 +8,24 @@ version '1.0-SNAPSHOT'
 mainClassName = 'cn.navclub.xtm.app.XTM'
 
 javafx {
-    version = '17'
+    version = '17.0.0.1'
     modules = ['javafx.controls', 'javafx.fxml', 'javafx.graphics']
 }
 
+jar {
+    archivesBaseName="xtm"
+    duplicatesStrategy=DuplicatesStrategy.EXCLUDE
+    manifest{
+        attributes 'Main-Class':"$mainClassName"
+    }
+    from {
+        configurations.runtimeClasspath.collect {
+            if (!it.name.startsWith("javafx")) {
+                zipTree(it)
+            }
+        }
+    }
+}
 
 dependencies {
     implementation project(":kit")
