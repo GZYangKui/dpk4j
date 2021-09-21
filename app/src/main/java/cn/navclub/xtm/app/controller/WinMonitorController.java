@@ -14,6 +14,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import javafx.stage.WindowEvent;
+import org.bytedeco.javacv.FFmpegLockCallback;
+import org.bytedeco.javacv.FFmpegLogCallback;
 import org.bytedeco.javacv.Frame;
 
 
@@ -42,10 +44,12 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
         var rect = Screen.getPrimary().getBounds();
         this.fRecord = FFmpegFrameRecorderProxy.createProxy();
 
+        FFmpegLogCallback.set();
+
         this.fRecord
-                .setFilename("rtmp://127.0.0.1:1935/myapp")
+                .setFilename("rtmp://127.0.0.1/myapp")
                 .setFormat("flv")
-                .setImgHeight(1920)
+                .setImgWidth(1920)
                 .setImgHeight(1080);
 
         this.fRecord.start();

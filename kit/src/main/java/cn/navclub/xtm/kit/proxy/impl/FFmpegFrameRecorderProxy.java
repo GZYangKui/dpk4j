@@ -26,7 +26,6 @@ public final class FFmpegFrameRecorderProxy extends FFmpegProxy {
                 this.getImgWidth(),
                 this.getImgHeight()
         );
-
         recorder.setFormat(this.getFormat());
         recorder.start();
     }
