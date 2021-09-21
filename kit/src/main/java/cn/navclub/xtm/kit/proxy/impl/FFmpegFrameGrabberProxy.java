@@ -4,63 +4,44 @@ package cn.navclub.xtm.kit.proxy.impl;
 import cn.navclub.xtm.kit.proxy.FFmpegProxy;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.FrameGrabber;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- *
- *
  * 自定义{@link FFmpegFrameGrabber}代理类
  *
  * @author yangkui
- *
  */
-public final class FFmpegFrameGrabberProxy implements FFmpegProxy {
-    private static final Logger LOG = LoggerFactory.getLogger(FFmpegFrameGrabberProxy.class);
-
-
-    private int imgWidth;
-    private int imgHeight;
-    private String format;
-    private String filename;
-
-    private Consumer<Frame> consumer;
-
+public final class FFmpegFrameGrabberProxy extends FFmpegProxy {
+    private Consumer<Frame> callback;
 
     private FFmpegFrameGrabber grabber;
 
+    private final FFmpegProxyThread proxyThread;
 
-    private final FFFGrabberThread grabberThread;
-
-    private volatile boolean running;
 
     public FFmpegFrameGrabberProxy() {
-        this.running = false;
-        this.grabberThread = new FFFGrabberThread(this);
+        this.proxyThread = new FFmpegProxyThread(this);
     }
 
     @Override
-    public FFmpegProxy start() {
-        Objects.requireNonNull(this.format);
-        Objects.requireNonNull(this.filename);
+    protected void start0() throws Exception {
+        Objects.requireNonNull(this.getFormat());
+        Objects.requireNonNull(this.getFilename());
 
-        this.grabber = new FFmpegFrameGrabber(this.filename);
-        this.grabber.setFormat(this.format);
-        this.grabber.setImageWidth(this.imgWidth);
-        this.grabber.setImageHeight(this.imgHeight);
+        this.grabber = new FFmpegFrameGrabber(this.getFilename());
+        this.grabber.setFormat(this.getFormat());
+        this.grabber.setImageWidth(this.getImgWidth());
+        this.grabber.setImageHeight(this.getImgHeight());
 
-        try {
-            this.grabber.start(true);
-            this.grabberThread.start();
-            this.running = true;
-        } catch (FFmpegFrameGrabber.Exception e) {
-            LOG.error("启动FFmpegFrameGrabber失败", e);
-            throw new RuntimeException(e);
-        }
+        this.grabber.start(true);
+
+        this.proxyThread.start();
+    }
+
+    public FFmpegProxy setCallback(Consumer<Frame> callback) {
+        this.callback = callback;
         return this;
     }
 
@@ -68,69 +49,67 @@ public final class FFmpegFrameGrabberProxy implements FFmpegProxy {
      * 停止{@link FFmpegFrameGrabber}抓取屏幕信息
      */
     @Override
-    public void stop() {
-        try {
-            this.running = false;
-            this.grabber.stop();
-        } catch (FFmpegFrameGrabber.Exception e) {
-            LOG.error("停止FFmpegFrameGrabber失败",e);
-        }
+    public void stop0() throws Exception {
+        this.proxyThread.stopGra();
+        this.grabber.stop();
     }
 
+    public Consumer<Frame> getCallback() {
+        return callback;
+    }
 
+    public static FFmpegFrameGrabberProxy createGraProxy() {
+        return new FFmpegFrameGrabberProxy();
+    }
 
     /**
      * 封装线程用于异步执行获取屏幕抓取信息
      */
-    private static class FFFGrabberThread extends Thread {
+    private static class FFmpegProxyThread extends Thread {
         private final FFmpegFrameGrabberProxy proxy;
 
-        public FFFGrabberThread(FFmpegFrameGrabberProxy proxy) {
+        private volatile boolean running;
+
+        public FFmpegProxyThread(FFmpegFrameGrabberProxy proxy) {
             this.proxy = proxy;
             this.setName("FFFGrabber-thread");
         }
 
         @Override
+        public synchronized void start() {
+            this.running = true;
+            super.start();
+        }
+
+        public void stopGra(){
+            this.running = false;
+        }
+
+        @Override
         public void run() {
-            while (proxy.running) {
+            while (this.running) {
                 try {
                     var frame = proxy.grabber.grabFrame();
-                    if (proxy.consumer != null) {
-                        proxy.consumer.accept(frame);
-                    }
-                } catch (FrameGrabber.Exception e) {
-                    LOG.error("获取Frame数据失败", e);
-                    throw new RuntimeException(e);
+                    this.callback(frame);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            }
+        }
 
+        public void callback(Frame frame) {
+            var callback = this.proxy.getCallback();
+            if (callback == null) {
+                return;
+            }
+            try {
+
+                callback.accept(frame);
+            } catch (Exception e) {
+                //NO to do
+                e.printStackTrace();
             }
         }
     }
 
-    public FFmpegProxy setImgWidth(int imgWidth) {
-        this.imgWidth = imgWidth;
-        return this;
-    }
-
-    public FFmpegProxy setImgHeight(int imgHeight) {
-        this.imgHeight = imgHeight;
-        return this;
-    }
-
-
-    @Override
-    public FFmpegProxy callback(Consumer<Frame> consumer) {
-        this.consumer = consumer;
-        return this;
-    }
-    @Override
-    public FFmpegProxy setFormat(String format) {
-        this.format = format;
-        return this;
-    }
-    @Override
-    public FFmpegProxy setFilename(String filename) {
-        this.filename = filename;
-        return this;
-    }
 }

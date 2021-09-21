@@ -3,8 +3,8 @@ package cn.navclub.xtm.app.controller;
 import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 
 import cn.navclub.xtm.app.util.FFmpegUtil;
-import cn.navclub.xtm.kit.proxy.FFmpegProxy;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
+import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameRecorderProxy;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -14,7 +14,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import javafx.stage.WindowEvent;
-import org.bytedeco.javacv.FFmpegFrameRecorder;
 import org.bytedeco.javacv.Frame;
 
 
@@ -31,8 +30,9 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     @FXML
     private Canvas canvas;
 
-    private final FFmpegProxy fProxy;
+    private final FFmpegFrameGrabberProxy fProxy;
 
+    private final FFmpegFrameRecorderProxy fRecord;
 
 
     public WinMonitorController() {
@@ -40,24 +40,27 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
         this.setStyleSheet("WinMonitorViewStyle.css");
         this.getStage().setTitle("x-terminal");
         var rect = Screen.getPrimary().getBounds();
-//        this.ffRecorder = new FFmpegFrameRecorder("rtmp://127.0.0.1:1935/myapp", 1920, 1080);
-//        this.ffRecorder.setFormat("flv");
-//        this.ffRecorder.setImageWidth((int) rect.getWidth());
-//        this.ffRecorder.setImageHeight((int) rect.getHeight());
-//        try {
-//            this.ffRecorder.start();
-//        } catch (FFmpegFrameRecorder.Exception e) {
-//            throw new RuntimeException(e);
-//        }
+        this.fRecord = FFmpegFrameRecorderProxy.createProxy();
+
+        this.fRecord
+                .setFilename("rtmp://127.0.0.1:1935/myapp")
+                .setFormat("flv")
+                .setImgHeight(1920)
+                .setImgHeight(1080);
+
+        this.fRecord.start();
 
         //初始化FFmpeg
-        this.fProxy = FFmpegProxy.createGraProxy()
-                .callback(this::onReceive)
+        this.fProxy = FFmpegFrameGrabberProxy.createGraProxy();
+
+        this.fProxy
+                .setCallback(this::onReceive)
                 .setFilename(":1+" + 0 + "," + 0)
                 .setImgWidth((int) rect.getWidth())
                 .setImgHeight((int) rect.getHeight())
                 .setFormat("x11grab")
                 .start();
+
         this.canvas.addEventFilter(MouseEvent.ANY, event -> {
 
         });
@@ -69,11 +72,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
      */
     private void onReceive(Frame frame) {
         var wi = FFmpegUtil.toFXImage(frame);
-//        try {
-//            this.ffRecorder.record(frame);
-//        } catch (FFmpegFrameRecorder.Exception e) {
-//            e.printStackTrace();
-//        }
+
         Platform.runLater(() -> {
             var width = this.canvas.getWidth();
             var height = this.canvas.getHeight();
@@ -81,6 +80,8 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
             context.clearRect(0, 0, width, height);
             context.drawImage(wi, 0, 0, width, height);
         });
+
+        this.fRecord.push(frame);
 
     }
 
@@ -95,11 +96,6 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     public void onRequestClose(WindowEvent event) {
         super.onRequestClose(event);
         this.fProxy.stop();
-//        try {
-//            this.ffRecorder.stop();
-//        } catch (FFmpegFrameRecorder.Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     /**

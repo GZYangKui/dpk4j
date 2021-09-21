@@ -1,9 +1,10 @@
 package cn.navclub.xtm.kit.proxy.impl;
 
 import cn.navclub.xtm.kit.proxy.FFmpegProxy;
+import org.bytedeco.javacv.FFmpegFrameRecorder;
 import org.bytedeco.javacv.Frame;
 
-import java.util.function.Consumer;
+import java.util.Objects;
 
 /**
  *
@@ -12,39 +13,44 @@ import java.util.function.Consumer;
  *
  * @author yangkui
  */
-public final class FFmpegFrameRecorderProxy implements FFmpegProxy {
+public final class FFmpegFrameRecorderProxy extends FFmpegProxy {
+    private FFmpegFrameRecorder recorder;
+
     @Override
-    public FFmpegProxy start() {
-        return null;
+    protected void start0() throws Exception {
+        Objects.requireNonNull(this.getFormat());
+        Objects.requireNonNull(this.getFilename());
+
+        recorder = new FFmpegFrameRecorder(
+                this.getFilename(),
+                this.getImgWidth(),
+                this.getImgHeight()
+        );
+
+        recorder.setFormat(this.getFormat());
+        recorder.start();
     }
 
     @Override
-    public FFmpegProxy setFilename(String filename) {
-        return null;
+    protected void stop0() throws Exception {
+        recorder.stop();
     }
 
-    @Override
-    public FFmpegProxy setFormat(String format) {
-        return null;
+    /**
+     *
+     * 向目标地址推流
+     *
+     */
+    public void push(Frame frame){
+        try {
+            this.recorder.record(frame);
+        } catch (FFmpegFrameRecorder.Exception e) {
+            this.logger.error("推流失败",e);
+        }
     }
 
-    @Override
-    public FFmpegProxy setImgWidth(int width) {
-        return null;
-    }
 
-    @Override
-    public FFmpegProxy setImgHeight(int height) {
-        return null;
-    }
-
-    @Override
-    public FFmpegProxy callback(Consumer<Frame> callback) {
-        return null;
-    }
-
-    @Override
-    public void stop() {
-
+    public static FFmpegFrameRecorderProxy createProxy(){
+        return new FFmpegFrameRecorderProxy();
     }
 }
