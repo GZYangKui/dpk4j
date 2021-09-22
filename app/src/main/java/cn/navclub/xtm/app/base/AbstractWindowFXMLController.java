@@ -5,12 +5,19 @@ import cn.navclub.xtm.app.service.WindowControllerService;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.net.URL;
 
 public class AbstractWindowFXMLController<T extends Parent> extends AbstractFXMLController<T> implements WindowControllerService {
+    private static final Image[] LOGOS = new Image[]{
+            AssetsHelper.loadImg("logo@1x.png"),
+            AssetsHelper.loadImg("logo@2x.png"),
+            AssetsHelper.loadImg("logo@3x.png")
+    };
+
     private final Stage stage;
 
     private final ChangeListener<Number> widthListener = this.windowChangeListener(false);
@@ -28,14 +35,16 @@ public class AbstractWindowFXMLController<T extends Parent> extends AbstractFXML
         this.stage.setOnCloseRequest(this::onRequestClose);
         this.stage.widthProperty().addListener(this.widthListener);
         this.stage.heightProperty().addListener(this.heightListener);
+
+        this.stage.getIcons().addAll(LOGOS);
     }
 
-    private ChangeListener<Number> windowChangeListener(boolean height){
+    private ChangeListener<Number> windowChangeListener(boolean height) {
         return (observable, oldValue, newValue) -> {
-            if (height){
-                this.windowSizeChange(this.stage.getWidth(),newValue.doubleValue());
-            }else {
-                this.windowSizeChange(this.stage.getHeight(),newValue.doubleValue());
+            if (height) {
+                this.windowSizeChange(this.stage.getWidth(), newValue.doubleValue());
+            } else {
+                this.windowSizeChange(this.stage.getHeight(), newValue.doubleValue());
             }
         };
     }
