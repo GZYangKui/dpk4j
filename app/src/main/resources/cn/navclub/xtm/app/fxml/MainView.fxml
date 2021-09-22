@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import cn.navclub.xtm.app.control.MainWinControl?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml" prefHeight="500" prefWidth="800">
+    <left>
+        <VBox styleClass="nav-box">
+            <Label text="朝天椒远程控制"/>
+            <TreeView showRoot="false" fx:id="treeView" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </left>
+    <center>
+        <BorderPane styleClass="content-box" fx:id="contentPane"/>
+    </center>
+</BorderPane>

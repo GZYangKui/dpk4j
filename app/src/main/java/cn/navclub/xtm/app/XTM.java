@@ -1,6 +1,6 @@
 package cn.navclub.xtm.app;
 
-import cn.navclub.xtm.app.controller.WinConfigController;
+import cn.navclub.xtm.app.controller.MainViewController;
 import javafx.application.Application;
 
 import javafx.stage.Stage;
@@ -19,7 +19,7 @@ public class XTM extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        new WinConfigController().openWindow();
+        new MainViewController().openWindow();
     }
 
 }

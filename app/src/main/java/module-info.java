@@ -17,6 +17,7 @@ module cn.navclub.xtm.app {
 
 
     opens cn.navclub.xtm.app.base to javafx.fxml;
+    opens cn.navclub.xtm.app.control to javafx.fxml;
     opens cn.navclub.xtm.app.controller to javafx.fxml;
 
     exports cn.navclub.xtm.app;
