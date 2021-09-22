@@ -6,8 +6,7 @@ module cn.navclub.xtm.kit {
     requires org.bytedeco.javacpp;
     requires org.bytedeco.openblas;
 
-    requires io.vertx.core;
-
+    requires static io.vertx.core;
 
     //根据各个平台自由切换
     requires org.bytedeco.ffmpeg.linux.x86_64;

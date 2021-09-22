@@ -15,7 +15,7 @@ javafx {
 
 task copyDepencies(type: Copy) {
     from configurations.runtimeClasspath
-    into '../jlink-script/libs'
+    into '../jlink-script/modules'
     //排除netty及其vertx相关依赖
     exclude { t ->
         def file = t.file as File
@@ -28,6 +28,7 @@ task copyDepencies(type: Copy) {
 
 jar {
     archivesBaseName = "xtm"
+    duplicatesStrategy=DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Main-Class': "$mainClassName"
     }
