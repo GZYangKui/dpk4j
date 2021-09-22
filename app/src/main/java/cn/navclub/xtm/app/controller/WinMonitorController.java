@@ -18,6 +18,7 @@ import org.bytedeco.javacv.FFmpegLogCallback;
 import org.bytedeco.javacv.Frame;
 
 
+
 /**
  * 远程操作主窗口
  *
@@ -36,7 +37,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     private final FFmpegFrameRecorderProxy fRecord;
 
 
-    public WinMonitorController() {
+    public WinMonitorController(final String serverIP,final String screenID) {
         super("WinMonitorView.fxml");
         this.setStyleSheet("WinMonitorViewStyle.css");
         this.getStage().setTitle("x-terminal");
@@ -46,7 +47,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
         FFmpegLogCallback.set();
 
         this.fRecord
-                .setFilename("rtmp://127.0.0.1/myapp")
+                .setFilename(String.format("rtmp://%s/myapp",serverIP))
                 .setFormat("flv")
                 .setImgWidth(1920)
                 .setImgHeight(1080);
@@ -58,7 +59,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
 
         this.fProxy
                 .setCallback(this::onReceive)
-                .setFilename(":1+" + 0 + "," + 0)
+                .setFilename(":"+screenID+"+" + screenID + "," + 0)
                 .setImgWidth((int) rect.getWidth())
                 .setImgHeight((int) rect.getHeight())
                 .setFormat("x11grab")

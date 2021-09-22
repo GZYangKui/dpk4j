@@ -6,8 +6,8 @@ subprojects {
     group 'cn.navclub'
     version '1.0-SNAPSHOT'
 
-    sourceCompatibility = '17'
-    targetCompatibility = '17'
+    sourceCompatibility = "17.PREVIEW"
+    targetCompatibility = "17.PREVIEW"
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'

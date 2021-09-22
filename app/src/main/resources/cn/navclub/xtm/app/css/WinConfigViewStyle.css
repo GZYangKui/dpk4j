@@ -1,0 +1,9 @@
+.grid-pane {
+    -fx-hgap: 1em;
+    -fx-vgap: 1em;
+    -fx-padding: .5em;
+}
+
+.grid-pane .text-field{
+    -fx-pref-width: 15em;
+}

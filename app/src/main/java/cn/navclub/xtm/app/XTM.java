@@ -1,11 +1,9 @@
 package cn.navclub.xtm.app;
 
-import cn.navclub.xtm.app.controller.WinMonitorController;
+import cn.navclub.xtm.app.controller.WinConfigController;
 import javafx.application.Application;
 
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -16,13 +14,12 @@ import org.slf4j.LoggerFactory;
 public class XTM extends Application {
 
     public static void main(String[] args) {
-//        System.setProperty("org.bytedeco.javacpp.logger.debug","true");
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        new WinMonitorController().openWindow();
+        new WinConfigController().openWindow();
     }
 
 }
