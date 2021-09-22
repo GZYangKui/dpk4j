@@ -1,4 +1,5 @@
 module cn.navclub.xtm.app {
+    requires io.vertx.core;
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
@@ -21,6 +22,7 @@ module cn.navclub.xtm.app {
     requires org.bytedeco.ffmpeg.linux.x86_64;
     requires org.bytedeco.opencv.linux.x86_64;
     requires org.bytedeco.openblas.linux.x86_64;
+
 
     opens cn.navclub.xtm.app.base to javafx.fxml;
     opens cn.navclub.xtm.app.controller to javafx.fxml;

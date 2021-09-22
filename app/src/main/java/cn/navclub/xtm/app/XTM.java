@@ -18,7 +18,7 @@ public class XTM extends Application {
 
     public static void main(String[] args) {
 //        System.setProperty("org.bytedeco.javacpp.logger.debug","true");
-        launch(XTM.class, args);
+        launch(args);
     }
 
     @Override
@@ -26,5 +26,4 @@ public class XTM extends Application {
         new WinMonitorController().openWindow();
     }
 
-//    Module cn.navclub.xtm.app contains package org.bytedeco.javacpp.presets, module org.bytedeco.javacpp exports package org.bytedeco.javacpp.presets to cn.navclub.xtm.app
 }
