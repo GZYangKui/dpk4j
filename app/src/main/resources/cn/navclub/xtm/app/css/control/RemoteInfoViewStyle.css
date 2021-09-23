@@ -1,0 +1,69 @@
+.remote-info-pane .label {
+    -fx-font-size: 1.2em;
+}
+
+.remote-info-pane .title {
+    -fx-font-size: 1.7em;
+}
+
+.remote-info-pane .code {
+    -fx-font-size: 2em;
+    -fx-text-fill: red;
+}
+.remote-info-pane .text-field{
+    -fx-font-size: 1.35em;
+}
+
+.remote-info-pane {
+    -fx-alignment: center;
+}
+
+.remote-info-pane .content {
+    -fx-alignment: center;
+    -fx-spacing: 1.2em;
+}
+
+.remote-info-pane .text-field {
+    -fx-pref-width: 15em;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-radius: .2em;
+    -fx-background-color: transparent;
+    -fx-border-color: #545454;
+}
+
+.remote-info-pane .text-field:focused {
+    -fx-border-color: #FF806B;
+}
+
+.remote-info-pane .grid-pane {
+    -fx-vgap: 1em;
+}
+
+
+.remote-info-pane .grid-pane VBox {
+    -fx-spacing: .5em;
+}
+
+.remote-info-pane .sub-content {
+    -fx-spacing: 2em;
+}
+
+.remote-info-pane .b-box {
+    -fx-alignment: center;
+}
+
+.remote-info-pane .button {
+    -fx-pref-width: 10em;
+    -fx-border-radius: 10em;
+    -fx-font-size: 1.4em;
+    -fx-background-radius: 10em;
+    -fx-background-color: transparent;
+    -fx-border-color: #FF806B;
+    -fx-border-width: .1em;
+    -fx-text-fill: #FF806B;
+    -fx-font-weight: bolder;
+}
+.remote-info-pane .button:hover{
+    -fx-background-color: #ff8d6b;
+    -fx-text-fill: #fff;
+}

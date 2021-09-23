@@ -13,6 +13,10 @@ public class AbstractFXMLController<T extends Parent> {
         this.parent = AssetsHelper.loadFXMLView(fxmlUrl, this);
     }
 
+    public AbstractFXMLController(String fxml){
+        this(AssetsHelper.class.getResource(AssetsHelper.FXML_ROOT+fxml));
+    }
+
     public T getParent() {
         return parent;
     }

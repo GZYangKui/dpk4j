@@ -4,6 +4,7 @@ import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 import cn.navclub.xtm.app.control.MainWinControl;
 import cn.navclub.xtm.app.control.NavListItem;
 
+import cn.navclub.xtm.app.controller.control.RemoteInfoController;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 
@@ -42,6 +43,7 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
             }
             newValue.updateStatus(true);
             //todo 切换tab
+            this.contentPane.setCenter(new RemoteInfoController().getParent());
         };
     }
 

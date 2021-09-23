@@ -15,11 +15,11 @@
     -fx-alignment: center;
 }
 
-.nav-box .list-view .label{
+.nav-box .list-view .label {
     -fx-font-size: 1.5em;
 }
 
-.nav-box .list-view .list-cell:selected .label{
+.nav-box .list-view .list-cell:selected .label {
     -fx-text-fill: #FF806B;
 }
 
@@ -29,6 +29,10 @@
 
 .content-box {
     -fx-background-color: #121212;
+}
+
+.content-box * {
+    -fx-text-fill: #c4c4c4;
 }
 
 .nav-box * {
