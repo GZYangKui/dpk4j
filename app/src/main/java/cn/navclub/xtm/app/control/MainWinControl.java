@@ -2,6 +2,7 @@ package cn.navclub.xtm.app.control;
 
 import cn.navclub.xtm.app.AssetsHelper;
 import cn.navclub.xtm.app.controller.MainViewController;
+import cn.navclub.xtm.app.event.WinDragEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
@@ -38,6 +39,9 @@ public class MainWinControl extends HBox {
 
         close.setOnAction(event -> this.controller.getStage().close());
         min.setOnAction(event -> this.controller.getStage().setIconified(true));
+
+        //注册拖拽事件
+        WinDragEvent.register(this.controller.getStage(),this);
     }
 
 
