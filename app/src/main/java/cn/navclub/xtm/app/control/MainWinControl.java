@@ -8,13 +8,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.WindowEvent;
 
 /**
- *
- *
  * {@link cn.navclub.xtm.app.controller.MainViewController} 窗口控制器(功能键、最小化、关闭)
- *
- *
  */
 public class MainWinControl extends HBox {
     private static final String DEFAULT_STYLE_CLASS = "win_control";
@@ -35,13 +32,23 @@ public class MainWinControl extends HBox {
         this.setAlignment(Pos.CENTER_RIGHT);
         this.getStyleClass().add(DEFAULT_STYLE_CLASS);
         close.getStyleClass().add("win-close");
-        this.getChildren().addAll(func,min,close);
+        this.getChildren().addAll(func, min, close);
 
-        close.setOnAction(event -> this.controller.getStage().close());
+        close.setOnAction(e -> {
+            var event = new WindowEvent(
+                    this.controller.getStage(),
+                    WindowEvent.WINDOW_HIDING
+            );
+            this.controller.onRequestClose(event);
+            //执行关闭窗口
+            if (!event.isConsumed()) {
+                this.controller.getStage().close();
+            }
+        });
         min.setOnAction(event -> this.controller.getStage().setIconified(true));
 
         //注册拖拽事件
-        WinDragEvent.register(this.controller.getStage(),this);
+        WinDragEvent.register(this.controller.getStage(), this);
     }
 
 
