@@ -5,19 +5,34 @@ import cn.navclub.xtm.app.control.MainWinControl;
 import cn.navclub.xtm.app.control.NavListItem;
 
 import cn.navclub.xtm.app.controller.control.RemoteInfoController;
+import cn.navclub.xtm.kit.client.XTClient;
+import cn.navclub.xtm.kit.client.XTClientBuilder;
+import cn.navclub.xtm.kit.client.XTClientListener;
+import cn.navclub.xtm.kit.client.XTClientStatus;
+import io.vertx.core.Vertx;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
 public class MainViewController extends AbstractWindowFXMLController<BorderPane> {
     @FXML
+    private Circle sDot;
+    @FXML
+    private Label sLabel;
+    @FXML
     private BorderPane contentPane;
     @FXML
     private ListView<NavListItem> listView;
+
+    private XTClient xtClient;
 
     private final ChangeListener<NavListItem> listItemChangeListener = this.listItemChangeListener();
 
@@ -34,11 +49,21 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
 
         this.listView.getSelectionModel().selectedItemProperty().addListener(this.listItemChangeListener);
         this.listView.getSelectionModel().select(0);
+
+        this.xtClient = XTClientBuilder
+                .newBuilder(Vertx.vertx())
+                .setHost("47.105.215.157")
+                .setPort(8888)
+                .build();
+
+        this.xtClient.connect();
+
+        this.xtClient.addListener(this.listener());
     }
 
-    private ChangeListener<NavListItem> listItemChangeListener(){
+    private ChangeListener<NavListItem> listItemChangeListener() {
         return (observable, oldValue, newValue) -> {
-            if (oldValue!=null) {
+            if (oldValue != null) {
                 oldValue.updateStatus(false);
             }
             newValue.updateStatus(true);
@@ -50,7 +75,33 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
     @Override
     public void onRequestClose(WindowEvent event) {
         super.onRequestClose(event);
+        System.out.println("close");
+        if (this.xtClient != null) {
+            xtClient.close();
+        }
         this.listView.getSelectionModel().selectedItemProperty().removeListener(this.listItemChangeListener);
+    }
+
+    public XTClientListener listener() {
+        var that = this;
+        return new XTClientListener() {
+            @Override
+            public void statusHandler(XTClientStatus oldStatus, XTClientStatus newStatus) {
+                var text = newStatus.getMessage();
+                final String hexStr;
+                if (newStatus == XTClientStatus.CONNECTED || newStatus == XTClientStatus.CONNECTING) {
+                    hexStr = "#53d115";
+                }else if (newStatus == XTClientStatus.NOT_CONNECT){
+                    hexStr = "#999999";
+                }else {
+                    hexStr = "#FF0042";
+                }
+                Platform.runLater(()->{
+                    that.sLabel.setText(text);
+                    that.sDot.setStroke(Color.web(hexStr));
+                });
+            }
+        };
     }
 
 }
