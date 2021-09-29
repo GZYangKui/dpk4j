@@ -1,12 +1,16 @@
 package cn.navclub.xtm.kit.client;
 
+import cn.navclub.xtm.kit.encode.SocketDataEncode;
+import cn.navclub.xtm.kit.enums.SocketCMD;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.NetSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -25,7 +29,6 @@ public class XTClient {
     private volatile AtomicReference<XTClientStatus> statusRef;
 
     private volatile NetSocket socket;
-
 
 
     protected XTClient(XTClientBuilder builder) {
@@ -50,6 +53,7 @@ public class XTClient {
             }
             this.statusChange(XTClientStatus.CONNECTED);
             this.init(ar.result());
+            promise.complete();
         });
         return promise.future();
     }
@@ -59,16 +63,34 @@ public class XTClient {
      */
     private void init(NetSocket socket) {
         this.socket = socket;
-        this.socket.exceptionHandler(t->{
-            System.out.println("异常发生");
+        this.socket.handler(buf->{
+            System.out.println(Arrays.toString(buf.getBytes()));
         });
-
-        this.socket.closeHandler(v->{
+        this.socket.closeHandler(v -> {
             this.statusChange(XTClientStatus.BROKEN_CONNECT);
             System.out.println("连接关闭");
         });
 
         this.socket.handler(System.out::println);
+    }
+
+    public Future<Void> send(SocketCMD cmd, JsonObject json) {
+        var status = this.statusRef.get();
+        if (status != XTClientStatus.CONNECTED) {
+            return Future.failedFuture("当前连接不可用,连接状态:[" + status.getMessage() + "]");
+        }
+        var buffer = SocketDataEncode.encodeJson(cmd, json);
+        var promise = Promise.<Void>promise();
+        var future = this.socket.write(buffer);
+        future.onComplete(ar -> {
+            if (ar.failed()) {
+                promise.fail(ar.cause());
+                LOG.info("Socket data package send failed:{}", ar.cause().getMessage());
+                return;
+            }
+            promise.complete();
+        });
+        return promise.future();
     }
 
     /**
@@ -81,29 +103,29 @@ public class XTClient {
         var promise = Promise.<Void>promise();
         this.socket.close(ar -> {
             if (ar.failed()) {
-                LOG.info("NetClient close failed:{}", ar.cause().getMessage());
                 promise.fail(ar.cause());
-            } else {
-                LOG.info("NetClient is closed!");
-                promise.complete();
+                LOG.info("NetClient close failed:{}", ar.cause().getMessage());
+                return;
             }
+            LOG.info("NetClient is closed!");
+            promise.complete();
             this.builder.getVertx().close();
         });
         return promise.future();
     }
 
-    public synchronized void addListener(XTClientListener listener){
-        if (this.listeners.contains(listener)){
+    public synchronized void addListener(XTClientListener listener) {
+        if (this.listeners.contains(listener)) {
             return;
         }
         this.listeners.add(listener);
     }
 
-    private void statusChange(XTClientStatus status){
+    private void statusChange(XTClientStatus status) {
         var oldStatus = this.statusRef.get();
         this.statusRef.set(status);
         for (XTClientListener service : this.listeners) {
-            service.statusHandler(oldStatus,status);
+            service.statusHandler(oldStatus, status);
         }
     }
 }

@@ -1,6 +1,7 @@
 package cn.navclub.xtm.kit.decode.impl;
 
 import cn.navclub.xtm.kit.decode.RecordParser;
+import cn.navclub.xtm.kit.enums.SocketCMD;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 
@@ -23,6 +24,8 @@ import io.vertx.core.buffer.Buffer;
  *        <td>真实数据</td>
  *     </tr>
  * </table>
+ *
+ * 关于数据类型,请查看 {@link SocketCMD}
  *
  * @author yangkui
  */

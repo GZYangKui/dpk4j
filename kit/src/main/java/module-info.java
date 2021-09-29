@@ -6,6 +6,9 @@ module cn.navclub.xtm.kit {
     requires transitive org.bytedeco.javacpp;
     requires transitive org.bytedeco.openblas;
 
+    requires transitive com.fasterxml.jackson.core;
+    requires transitive com.fasterxml.jackson.databind;
+
     requires static io.vertx.core;
 
     //根据各个平台自由切换
@@ -19,4 +22,5 @@ module cn.navclub.xtm.kit {
     exports cn.navclub.xtm.kit.decode;
     exports cn.navclub.xtm.kit.client;
     exports cn.navclub.xtm.kit.proxy.impl;
+    exports cn.navclub.xtm.kit.enums;
 }

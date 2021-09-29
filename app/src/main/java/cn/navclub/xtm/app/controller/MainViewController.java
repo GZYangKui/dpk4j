@@ -9,7 +9,9 @@ import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientBuilder;
 import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.client.XTClientStatus;
+import cn.navclub.xtm.kit.enums.SocketCMD;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -32,7 +34,7 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
     @FXML
     private ListView<NavListItem> listView;
 
-    private XTClient xtClient;
+    private final XTClient xtClient;
 
     private final ChangeListener<NavListItem> listItemChangeListener = this.listItemChangeListener();
 
@@ -52,11 +54,13 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
 
         this.xtClient = XTClientBuilder
                 .newBuilder(Vertx.vertx())
-                .setHost("47.105.215.157")
+                .setHost("127.0.0.1")
                 .setPort(8888)
                 .build();
 
-        this.xtClient.connect();
+        this.xtClient.connect().onComplete(it->{
+            this.xtClient.send(SocketCMD.HEART_BEAT,new JsonObject());
+        });
 
         this.xtClient.addListener(this.listener());
     }
@@ -75,7 +79,6 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
     @Override
     public void onRequestClose(WindowEvent event) {
         super.onRequestClose(event);
-        System.out.println("close");
         if (this.xtClient != null) {
             xtClient.close();
         }
@@ -85,6 +88,7 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
     public XTClientListener listener() {
         var that = this;
         return new XTClientListener() {
+
             @Override
             public void statusHandler(XTClientStatus oldStatus, XTClientStatus newStatus) {
                 var text = newStatus.getMessage();
