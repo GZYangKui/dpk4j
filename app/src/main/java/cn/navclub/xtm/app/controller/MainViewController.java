@@ -11,6 +11,7 @@ import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.client.XTClientStatus;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -88,6 +89,11 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
     public XTClientListener listener() {
         var that = this;
         return new XTClientListener() {
+
+            @Override
+            public void onMessage(SocketCMD cmd, Buffer buffer, Buffer data) {
+
+            }
 
             @Override
             public void statusHandler(XTClientStatus oldStatus, XTClientStatus newStatus) {
