@@ -16,7 +16,7 @@
                 <VBox>
                     <Label text="本机识别码"/>
                     <HBox>
-                        <Label text="111 111 111 111" styleClass="code"/>
+                        <Label text="- - -" fx:id="robotCode" styleClass="code"/>
                     </HBox>
                 </VBox>
                 <VBox GridPane.rowIndex="1">

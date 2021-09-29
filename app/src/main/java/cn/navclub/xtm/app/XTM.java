@@ -5,6 +5,8 @@ import javafx.application.Application;
 
 import javafx.stage.Stage;
 
+import java.text.DecimalFormat;
+
 
 /**
  * XTerminal程序启动类
@@ -19,7 +21,7 @@ public class XTM extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        new MainViewController().openWindow();
+        MainViewController.newInstance().openWindow();
     }
 
 }

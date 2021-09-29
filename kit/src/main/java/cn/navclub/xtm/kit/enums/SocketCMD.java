@@ -23,4 +23,14 @@ public enum SocketCMD {
     public String getMessage() {
         return message;
     }
+
+
+    public static SocketCMD getInstance(int cmd){
+        for (SocketCMD value : values()) {
+            if (value.cmd == cmd){
+                return value;
+            }
+        }
+        return SocketCMD.UNKNOWN_CMD;
+    }
 }

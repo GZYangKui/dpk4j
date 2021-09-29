@@ -1,5 +1,6 @@
 package cn.navclub.xtm.kit.client;
 
+import cn.navclub.xtm.kit.decode.RecordParser;
 import cn.navclub.xtm.kit.encode.SocketDataEncode;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import io.vertx.core.Future;
@@ -63,15 +64,19 @@ public class XTClient {
      */
     private void init(NetSocket socket) {
         this.socket = socket;
-        this.socket.handler(buf->{
-            System.out.println(Arrays.toString(buf.getBytes()));
+        var parser = RecordParser.create();
+        parser.handler(record -> {
+            //投递消息
+            for (XTClientListener listener : this.listeners) {
+                try {
+                    listener.onMessage(record);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         });
-        this.socket.closeHandler(v -> {
-            this.statusChange(XTClientStatus.BROKEN_CONNECT);
-            System.out.println("连接关闭");
-        });
-
-        this.socket.handler(System.out::println);
+        this.socket.closeHandler(v -> this.statusChange(XTClientStatus.BROKEN_CONNECT));
+        this.socket.handler(parser::handle);
     }
 
     public Future<Void> send(SocketCMD cmd, JsonObject json) {
@@ -79,7 +84,7 @@ public class XTClient {
         if (status != XTClientStatus.CONNECTED) {
             return Future.failedFuture("当前连接不可用,连接状态:[" + status.getMessage() + "]");
         }
-        var buffer = SocketDataEncode.encodeJson(cmd, json);
+        var buffer = SocketDataEncode.encodeJson(cmd, 0, json);
         var promise = Promise.<Void>promise();
         var future = this.socket.write(buffer);
         future.onComplete(ar -> {

@@ -9,9 +9,9 @@ import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientBuilder;
 import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.client.XTClientStatus;
+
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -25,7 +25,8 @@ import javafx.scene.shape.Circle;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
-public class MainViewController extends AbstractWindowFXMLController<BorderPane> {
+
+public class MainViewController extends AbstractWindowFXMLController<BorderPane> implements XTClientListener {
     @FXML
     private Circle sDot;
     @FXML
@@ -39,7 +40,7 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
 
     private final ChangeListener<NavListItem> listItemChangeListener = this.listItemChangeListener();
 
-    public MainViewController() {
+    private MainViewController() {
         super("MainView.fxml");
 
         this.listView.getItems().addAll(NavListItem.create());
@@ -50,20 +51,18 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
         this.getStage().setTitle("朝天椒远程连接");
         this.getStage().initStyle(StageStyle.UNDECORATED);
 
-        this.listView.getSelectionModel().selectedItemProperty().addListener(this.listItemChangeListener);
-        this.listView.getSelectionModel().select(0);
-
         this.xtClient = XTClientBuilder
                 .newBuilder(Vertx.vertx())
                 .setHost("127.0.0.1")
                 .setPort(8888)
                 .build();
-
-        this.xtClient.connect().onComplete(it->{
-            this.xtClient.send(SocketCMD.HEART_BEAT,new JsonObject());
+        this.xtClient.addListener(this);
+        this.xtClient.connect().onComplete(it -> {
+            this.xtClient.send(SocketCMD.HEART_BEAT, new JsonObject());
         });
 
-        this.xtClient.addListener(this.listener());
+        this.listView.getSelectionModel().selectedItemProperty().addListener(this.listItemChangeListener);
+        this.listView.getSelectionModel().select(0);
     }
 
     private ChangeListener<NavListItem> listItemChangeListener() {
@@ -73,7 +72,7 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
             }
             newValue.updateStatus(true);
             //todo 切换tab
-            this.contentPane.setCenter(new RemoteInfoController().getParent());
+            this.contentPane.setCenter(new RemoteInfoController(this).getParent());
         };
     }
 
@@ -85,33 +84,32 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
         }
         this.listView.getSelectionModel().selectedItemProperty().removeListener(this.listItemChangeListener);
     }
-
-    public XTClientListener listener() {
-        var that = this;
-        return new XTClientListener() {
-
-            @Override
-            public void onMessage(SocketCMD cmd, Buffer buffer, Buffer data) {
-
-            }
-
-            @Override
-            public void statusHandler(XTClientStatus oldStatus, XTClientStatus newStatus) {
-                var text = newStatus.getMessage();
-                final String hexStr;
-                if (newStatus == XTClientStatus.CONNECTED || newStatus == XTClientStatus.CONNECTING) {
-                    hexStr = "#53d115";
-                }else if (newStatus == XTClientStatus.NOT_CONNECT){
-                    hexStr = "#999999";
-                }else {
-                    hexStr = "#FF0042";
-                }
-                Platform.runLater(()->{
-                    that.sLabel.setText(text);
-                    that.sDot.setStroke(Color.web(hexStr));
-                });
-            }
-        };
+    @Override
+    public void statusHandler(XTClientStatus oldStatus, XTClientStatus newStatus) {
+        var text = newStatus.getMessage();
+        final String hexStr;
+        if (newStatus == XTClientStatus.CONNECTED || newStatus == XTClientStatus.CONNECTING) {
+            hexStr = "#53d115";
+        } else if (newStatus == XTClientStatus.NOT_CONNECT) {
+            hexStr = "#999999";
+        } else {
+            hexStr = "#FF0042";
+        }
+        Platform.runLater(() -> {
+            this.sLabel.setText(text);
+            this.sDot.setStroke(Color.web(hexStr));
+        });
     }
 
+    private static MainViewController controller;
+    public synchronized static MainViewController newInstance(){
+        if (controller == null){
+            controller = new MainViewController();
+        }
+        return controller;
+    }
+
+    public XTClient getXtClient() {
+        return xtClient;
+    }
 }

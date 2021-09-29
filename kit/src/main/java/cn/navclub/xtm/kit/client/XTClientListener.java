@@ -1,7 +1,6 @@
 package cn.navclub.xtm.kit.client;
 
-import cn.navclub.xtm.kit.enums.SocketCMD;
-import io.vertx.core.buffer.Buffer;
+import cn.navclub.xtm.kit.decode.RecordParser;
 
 public interface XTClientListener {
     /**
@@ -13,12 +12,8 @@ public interface XTClientListener {
 
     /**
      * 消息收到时触发该函数
-     *
-     * @param cmd    消息类型
-     * @param buffer 原始响应数据
-     * @param data   原始响应数据中的数据
      */
-    default void onMessage(SocketCMD cmd, Buffer buffer, Buffer data) {
+    default void onMessage(RecordParser.Record record) {
 
     }
 

@@ -11,22 +11,25 @@ import io.vertx.core.json.JsonObject;
  * @author yangkui
  */
 public class SocketDataEncode {
-    public static Buffer encode(SocketCMD cmd, byte[] data) {
+    public static Buffer encode(SocketCMD cmd, int target, byte[] data) {
         var len = ByteUtil.int2byte(data.length);
-        var template = new byte[]{
+        var address = ByteUtil.int2byte(target);
+        var temp = new byte[]{
                 'X',
                 'T',
                 cmd.getCmd(),
         };
 
-        var buffer = Buffer.buffer(template);
+        var buffer = Buffer.buffer(temp);
+        //添加目标地址(平台地址为0)
+        buffer.appendBytes(address);
         buffer.appendBytes(len);
         buffer.appendBytes(data);
 
         return buffer;
     }
 
-    public static Buffer encodeJson(SocketCMD cmd, JsonObject json) {
-        return encode(cmd, json.toBuffer().getBytes());
+    public static Buffer encodeJson(SocketCMD cmd, int target, JsonObject json) {
+        return encode(cmd, target, json.toBuffer().getBytes());
     }
 }
