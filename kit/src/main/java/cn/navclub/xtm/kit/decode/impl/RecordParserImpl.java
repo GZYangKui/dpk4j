@@ -1,6 +1,7 @@
 package cn.navclub.xtm.kit.decode.impl;
 
 import cn.navclub.xtm.kit.decode.RecordParser;
+import cn.navclub.xtm.kit.enums.ClientStatus;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import cn.navclub.xtm.kit.util.ByteUtil;
 import io.vertx.core.Handler;
@@ -16,6 +17,7 @@ import io.vertx.core.buffer.Buffer;
  *        <th>2</th>
  *        <th>3-6</th>
  *        <th>7-10</th>
+ *        <th>10-13</th>
  *        <th>......</th>
  *     </tr>
  *     <tr>
@@ -23,6 +25,7 @@ import io.vertx.core.buffer.Buffer;
  *        <td>T</td>
  *        <td>数据类型</td>
  *        <td>目标地址</td>
+ *        <th>消息状态</th>
  *        <td>数据长度</td>
  *        <td>真实数据</td>
  *     </tr>
@@ -36,7 +39,7 @@ public class RecordParserImpl implements RecordParser {
     /**
      * 数据包头长度
      */
-    private static final int HEADER_LENGTH = 10;
+    private static final int HEADER_LENGTH = 15;
 
 
     private Handler<Record> handler;
@@ -78,16 +81,23 @@ public class RecordParserImpl implements RecordParser {
                 }
                 var cmd = arr[i + 2];
                 var addr = ByteUtil.byte2int(this.buffer.getBytes(3, 7));
-                var len = ByteUtil.byte2int(this.buffer.getBytes(7, 11));
+                var status = ByteUtil.byte2int(this.buffer.getBytes(7, 11));
+                var len = ByteUtil.byte2int(this.buffer.getBytes(11, 15));
                 var maxLen = HEADER_LENGTH + len;
                 //数据长度不够=>不做处理
                 if (maxLen > this.buffer.length()) {
                     return;
                 }
-                var data = this.buffer.getBuffer(HEADER_LENGTH+1, maxLen+1);
-                var record = new Record(SocketCMD.getInstance(cmd), addr, len, data);
+                var data = this.buffer.getBuffer(HEADER_LENGTH, maxLen);
+                var record = new Record(
+                        SocketCMD.getInstance(cmd),
+                        addr,
+                        len,
+                        data,
+                        ClientStatus.getInstance(status)
+                );
                 this.handler.handle(record);
-                this.buffer = this.buffer.getBuffer(maxLen+1, this.buffer.length());
+                this.buffer = this.buffer.getBuffer(maxLen, this.buffer.length());
             } while (true);
         } finally {
             parsing = false;

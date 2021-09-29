@@ -1,5 +1,6 @@
 package cn.navclub.xtm.kit.encode;
 
+import cn.navclub.xtm.kit.enums.ClientStatus;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import cn.navclub.xtm.kit.util.ByteUtil;
 import io.vertx.core.buffer.Buffer;
@@ -11,9 +12,10 @@ import io.vertx.core.json.JsonObject;
  * @author yangkui
  */
 public class SocketDataEncode {
-    public static Buffer encode(SocketCMD cmd, int target, byte[] data) {
+    public static Buffer encode(SocketCMD cmd, ClientStatus clientStatus, int target, byte[] data) {
         var len = ByteUtil.int2byte(data.length);
         var address = ByteUtil.int2byte(target);
+        var status = ByteUtil.int2byte(clientStatus.getStatus());
         var temp = new byte[]{
                 'X',
                 'T',
@@ -23,13 +25,16 @@ public class SocketDataEncode {
         var buffer = Buffer.buffer(temp);
         //添加目标地址(平台地址为0)
         buffer.appendBytes(address);
+        //天剑消息状态
+        buffer.appendBytes(status);
+        //数据长度
         buffer.appendBytes(len);
         buffer.appendBytes(data);
 
         return buffer;
     }
 
-    public static Buffer encodeJson(SocketCMD cmd, int target, JsonObject json) {
-        return encode(cmd, target, json.toBuffer().getBytes());
+    public static Buffer encodeJson(SocketCMD cmd, ClientStatus clientStatus, int target, JsonObject json) {
+        return encode(cmd, clientStatus, target, json.toBuffer().getBytes());
     }
 }

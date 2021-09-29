@@ -2,6 +2,7 @@ package cn.navclub.xtm.kit.client;
 
 import cn.navclub.xtm.kit.decode.RecordParser;
 import cn.navclub.xtm.kit.encode.SocketDataEncode;
+import cn.navclub.xtm.kit.enums.ClientStatus;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -80,12 +81,12 @@ public class XTClient {
         this.socket.handler(parser::handle);
     }
 
-    public Future<Void> send(SocketCMD cmd, JsonObject json) {
+    public Future<Void> send(SocketCMD cmd, ClientStatus clientStatus, JsonObject json) {
         var status = this.statusRef.get();
         if (status != XTClientStatus.CONNECTED) {
             return Future.failedFuture("当前连接不可用,连接状态:[" + status.getMessage() + "]");
         }
-        var buffer = SocketDataEncode.encodeJson(cmd, 0, json);
+        var buffer = SocketDataEncode.encodeJson(cmd, clientStatus,0, json);
         var promise = Promise.<Void>promise();
         var future = this.socket.write(buffer);
         future.onComplete(ar -> {

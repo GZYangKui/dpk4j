@@ -1,6 +1,7 @@
 package cn.navclub.xtm.kit.decode;
 
 import cn.navclub.xtm.kit.decode.impl.RecordParserImpl;
+import cn.navclub.xtm.kit.enums.ClientStatus;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
@@ -34,7 +35,7 @@ public interface RecordParser {
         return new RecordParserImpl();
     }
 
-    record Record(SocketCMD cmd, Integer address, Integer length, Buffer data) {
+    record Record(SocketCMD cmd, Integer address, Integer length, Buffer data, ClientStatus status) {
         /**
          *
          * 将接收到的数据转换为json格式
