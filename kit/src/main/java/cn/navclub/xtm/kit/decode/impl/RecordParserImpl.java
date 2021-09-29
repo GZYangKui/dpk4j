@@ -87,7 +87,7 @@ public class RecordParserImpl implements RecordParser {
                 var data = this.buffer.getBuffer(HEADER_LENGTH+1, maxLen+1);
                 var record = new Record(SocketCMD.getInstance(cmd), addr, len, data);
                 this.handler.handle(record);
-                this.buffer = this.buffer.getBuffer(maxLen, this.buffer.length());
+                this.buffer = this.buffer.getBuffer(maxLen+1, this.buffer.length());
             } while (true);
         } finally {
             parsing = false;

@@ -5,27 +5,22 @@ public class ByteUtil {
      * 将数字转换为字节数组
      */
     public static byte[] int2byte(int i) {
-        var arr = new byte[4];
-
-        arr[0] = (byte) ((i >>> 24) & 0xff);
-        arr[1] = (byte) ((i >>> 16) & 0xff);
-        arr[2] = (byte) ((i >>> 8) & 0xff);
-        arr[3] = (byte) (i & 0xff);
-
-        return arr;
+        return new byte[]{
+                (byte) (i & 0xff),
+                (byte) (i >> 8 & 0xff),
+                (byte) (i >> 16 & 0xff),
+                (byte) (i >> 24 & 0xff)
+        };
     }
 
     /**
-     *
      * 字节数组转换为整形
-     *
      */
-    public static int byte2int(byte[] bytes) {
-        int num = bytes[3] & 0xff;
-        num |= ((bytes[2] << 8) & 0xff00);
-        num |= ((bytes[1] << 16) & 0xff0000);
-        num |= ((bytes[0] >> 24) & 0xff000000);
-        return num;
+    public static int byte2int(byte[] arr) {
+        return (arr[0] & 0xff)
+                | ((arr[1] & 0xff) << 8)
+                | ((arr[2] & 0xff) << 16)
+                | ((arr[3] & 0xff) << 24);
     }
 
 }

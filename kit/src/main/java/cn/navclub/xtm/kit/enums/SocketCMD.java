@@ -6,6 +6,7 @@ package cn.navclub.xtm.kit.enums;
 public enum SocketCMD {
     UNKNOWN_CMD((byte) -1, "未知指令"),
     HEART_BEAT((byte) 0, "客户端心跳"),
+    REQUEST_REMOTE((byte) 2, "请求远程控制"),
     UPDATE_CLIENT_CODE((byte) 1, "更新客户端识别码");
 
     private final byte cmd;
@@ -25,9 +26,9 @@ public enum SocketCMD {
     }
 
 
-    public static SocketCMD getInstance(int cmd){
+    public static SocketCMD getInstance(int cmd) {
         for (SocketCMD value : values()) {
-            if (value.cmd == cmd){
+            if (value.cmd == cmd) {
                 return value;
             }
         }
