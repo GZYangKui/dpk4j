@@ -45,8 +45,8 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
 
     private void updateCode(int code) {
         this.code = code;
-        var format = new DecimalFormat("### ###");
-        var str = format.format(code);
+        var format = new DecimalFormat("###,###,###");
+        var str = format.format(code).replaceAll(","," ");
         Platform.runLater(() -> {
             this.robotCode.setText(str);
         });

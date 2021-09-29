@@ -8,7 +8,7 @@
 
 .remote-info-pane .code {
     -fx-font-size: 2em;
-    -fx-text-fill: red;
+    -fx-text-fill: #fff;
 }
 .remote-info-pane .text-field{
     -fx-font-size: 1.35em;

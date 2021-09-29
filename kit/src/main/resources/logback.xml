@@ -259,21 +259,9 @@
     </appender>
 
 
-    <!-- mybatis日志打印-->
-
-    <logger name="org.apache.ibatis" level="DEBUG"/>
-
-    <logger name="java.sql" level="DEBUG"/>
     <logger name="org.bytedeco.javacpp" level="DEBUG"/>
-
-    <!-- 项目 mapper 路径
-
-    console控制台显示sql语句：STDOUT.filter.level -> debug级别
-
--->
-
-
-    <logger level="DEBUG" name="com.croot.ta"></logger>
+    <logger level="DEBUG" name="com.croot.ta"/>
+    <logger level="WARN" name="ch.qos.logback"/>
 
     <!-- 生产环境下，将此级别配置为适合的级别，以免日志文件太多或影响程序性能 -->
 
@@ -286,7 +274,6 @@
         <appender-ref ref="FILEINFO"/>
 
         <!-- 生产环境将请stdout,testfile去掉 -->
-
         <appender-ref ref="STDOUT"/>
 
     </root>

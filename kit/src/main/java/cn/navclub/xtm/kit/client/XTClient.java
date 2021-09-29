@@ -66,6 +66,7 @@ public class XTClient {
         this.socket = socket;
         var parser = RecordParser.create();
         parser.handler(record -> {
+            LOG.info("Receive TCP Msg[cmd:{},addr:{},len:{}byte]", record.cmd(), record.address(), record.length());
             //投递消息
             for (XTClientListener listener : this.listeners) {
                 try {
