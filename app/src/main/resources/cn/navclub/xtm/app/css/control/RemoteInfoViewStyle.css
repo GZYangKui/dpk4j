@@ -10,7 +10,8 @@
     -fx-font-size: 2em;
     -fx-text-fill: #fff;
 }
-.remote-info-pane .text-field{
+
+.remote-info-pane .text-field {
     -fx-font-size: 1.35em;
 }
 
@@ -27,8 +28,8 @@
     -fx-pref-width: 15em;
     -fx-text-fill: #FFFFFF;
     -fx-border-radius: .2em;
-    -fx-background-color: transparent;
     -fx-border-color: #545454;
+    -fx-background-color: transparent;
 }
 
 .remote-info-pane .text-field:focused {
@@ -63,7 +64,27 @@
     -fx-text-fill: #FF806B;
     -fx-font-weight: bolder;
 }
-.remote-info-pane .button:hover{
+
+.remote-info-pane .button:hover {
     -fx-background-color: #ff8d6b;
     -fx-text-fill: #fff;
+}
+
+.remote-info-pane .edit-btn {
+    -fx-background-color: transparent;
+}
+
+.remote-info-pane .edit-btn .context-menu {
+    -fx-background-color: #121212;
+    -fx-border-width: .1em;
+    -fx-border-color: #6A6A6A;
+}
+
+.remote-info-pane .edit-btn .context-menu .menu-item:hover,
+.remote-info-pane .edit-btn .context-menu .menu-item:focused {
+    -fx-background-color: transparent;
+}
+
+.remote-info-pane .edit-btn .context-menu .menu-item:hover .label {
+    -fx-text-fill: #FF806B;
 }

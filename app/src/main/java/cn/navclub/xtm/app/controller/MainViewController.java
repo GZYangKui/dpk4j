@@ -46,7 +46,6 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
         this.listView.getItems().addAll(NavListItem.create());
         this.contentPane.setTop(new MainWinControl(this));
 
-        this.setStyleSheet("MainViewStyle.css");
         this.getStage().setResizable(false);
         this.getStage().setTitle("朝天椒远程连接");
         this.getStage().initStyle(StageStyle.UNDECORATED);

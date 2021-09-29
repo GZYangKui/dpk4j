@@ -5,7 +5,10 @@
 
 <?import javafx.scene.shape.Circle?>
 <BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml" prefHeight="550" prefWidth="800">
+            xmlns:fx="http://javafx.com/fxml"
+            prefHeight="550"
+            prefWidth="800"
+            stylesheets="/cn/navclub/xtm/app/css/MainViewStyle.css">
     <left>
         <VBox styleClass="nav-box">
             <Label text="朝天椒远程控制"/>

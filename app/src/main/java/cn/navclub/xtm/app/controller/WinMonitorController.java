@@ -39,7 +39,6 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
 
     public WinMonitorController(final String serverIP,final String screenID) {
         super("WinMonitorView.fxml");
-        this.setStyleSheet("WinMonitorViewStyle.css");
         this.getStage().setTitle("x-terminal");
         var rect = Screen.getPrimary().getBounds();
         this.fRecord = FFmpegFrameRecorderProxy.createProxy();

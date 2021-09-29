@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      styleClass="remote-info-pane">
+      styleClass="remote-info-pane"
+      stylesheets="/cn/navclub/xtm/app/css/control/RemoteInfoViewStyle.css">
     <HBox styleClass="content">
         <VBox styleClass="sub-content">
             <Label text="允许控制本机" styleClass="title"/>
@@ -22,7 +22,14 @@
                 <VBox GridPane.rowIndex="1">
                     <Label text="本机验证码"/>
                     <HBox>
-                        <Label text="cp1111" styleClass="code"/>
+                        <Label text="cp1111" styleClass="code" fx:id="password"/>
+                        <MenuButton styleClass="edit-btn" fx:id="editBtn">
+                            <graphic>
+                                <ImageView>
+                                    <Image url="/cn/navclub/xtm/app/img/edit.png"/>
+                                </ImageView>
+                            </graphic>
+                        </MenuButton>
                     </HBox>
                 </VBox>
             </GridPane>
