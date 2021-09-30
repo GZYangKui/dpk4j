@@ -22,8 +22,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author yangkui
  */
 public class XTClient {
-    private static final Logger LOG = LoggerFactory.getLogger(XTClient.class);
     private static final long DEFAULT_TIMER_ID = -1;
+    private static final Logger LOG = LoggerFactory.getLogger(XTClient.class);
 
     private volatile NetSocket socket;
 
@@ -131,6 +131,7 @@ public class XTClient {
         this.clearTimer();
         //清除重连定时器
         this.vertx.cancelTimer(this.reTimeId);
+        this.reTimeId = DEFAULT_TIMER_ID;
         if (this.socket == null) {
             return;
         }
@@ -155,8 +156,6 @@ public class XTClient {
         //连接断开=>停止心跳及关闭连接
         if (status == XTClientStatus.BROKEN_CONNECT) {
             this.close();
-            //开启重连机制
-            this.reTimeId = DEFAULT_TIMER_ID;
             this.startReTimer();
         }
         this.statusRef.set(status);

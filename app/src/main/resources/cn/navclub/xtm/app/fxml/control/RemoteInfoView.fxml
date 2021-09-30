@@ -40,14 +40,14 @@
             <GridPane styleClass="grid-pane">
                 <VBox>
                     <Label text="伙伴识别码"/>
-                    <TextField/>
+                    <TextField fx:id="friendCode"/>
                 </VBox>
                 <VBox GridPane.rowIndex="1">
                     <Label text="验证码"/>
-                    <TextField/>
+                    <TextField fx:id="friendPw"/>
                 </VBox>
                 <HBox GridPane.rowIndex="2" styleClass="b-box">
-                    <Button text="远程协助"/>
+                    <Button text="远程协助" onAction="#requestRemote"/>
                 </HBox>
             </GridPane>
         </VBox>
