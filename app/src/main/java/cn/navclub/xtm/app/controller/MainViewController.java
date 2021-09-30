@@ -84,6 +84,7 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
         super.onRequestClose(event);
         if (this.xtClient != null) {
             xtClient.close();
+            xtClient.getVertx().close();
         }
         this.listView.getSelectionModel().selectedItemProperty().removeListener(this.listItemChangeListener);
     }
