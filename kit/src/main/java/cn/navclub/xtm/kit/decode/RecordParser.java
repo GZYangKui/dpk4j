@@ -3,6 +3,7 @@ package cn.navclub.xtm.kit.decode;
 import cn.navclub.xtm.kit.decode.impl.RecordParserImpl;
 import cn.navclub.xtm.kit.enums.ClientStatus;
 import cn.navclub.xtm.kit.enums.SocketCMD;
+import cn.navclub.xtm.kit.enums.TCPDirection;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
@@ -35,13 +36,20 @@ public interface RecordParser {
         return new RecordParserImpl();
     }
 
-    record Record(SocketCMD cmd, Integer address, Integer length, Buffer data, ClientStatus status) {
+    /**
+     * 封装TCP消息为pojo对象
+     */
+    record Record(SocketCMD cmd,
+                  Integer address,
+                  Integer sourceAddr,
+                  Integer length,
+                  Buffer data,
+                  ClientStatus status,
+                  TCPDirection direction) {
         /**
-         *
          * 将接收到的数据转换为json格式
-         *
          */
-        public JsonObject toJson(){
+        public JsonObject toJson() {
             return data().toJsonObject();
         }
     }

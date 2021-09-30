@@ -10,7 +10,7 @@ import cn.navclub.xtm.kit.client.XTClientBuilder;
 import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.client.XTClientStatus;
 
-import cn.navclub.xtm.kit.enums.ClientStatus;
+import cn.navclub.xtm.kit.encode.SocketDataEncode;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -56,13 +56,12 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
                 .setHost("127.0.0.1")
                 .setPort(8888)
                 .build();
+
         this.xtClient.addListener(this);
+
         this.xtClient.connect().onComplete(it -> {
-            this.xtClient.send(
-                    SocketCMD.HEART_BEAT,
-                    ClientStatus.OK,
-                    new JsonObject()
-            );
+            var buffer = SocketDataEncode.restRequest(SocketCMD.HEART_BEAT, 0,null);
+            this.xtClient.send(buffer);
         });
 
         this.listView.getSelectionModel().selectedItemProperty().addListener(this.listItemChangeListener);
@@ -90,7 +89,7 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
     }
 
     @Override
-    public void statusHandler(XTClientStatus oldStatus, XTClientStatus newStatus) {
+    public void statusHandler(XTClient client, XTClientStatus oldStatus, XTClientStatus newStatus) {
         var text = newStatus.getMessage();
         final String hexStr;
         if (newStatus == XTClientStatus.CONNECTED || newStatus == XTClientStatus.CONNECTING) {

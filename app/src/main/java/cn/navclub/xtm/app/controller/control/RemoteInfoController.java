@@ -3,6 +3,7 @@ package cn.navclub.xtm.app.controller.control;
 import cn.navclub.xtm.app.base.AbstractFXMLController;
 import cn.navclub.xtm.app.config.Constants;
 import cn.navclub.xtm.app.controller.MainViewController;
+import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.decode.RecordParser;
 import cn.navclub.xtm.kit.enums.SocketCMD;
@@ -48,7 +49,7 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
     }
 
     @Override
-    public void onMessage(RecordParser.Record record) {
+    public void onMessage(XTClient client, RecordParser.Record record) {
         //执行更新操作
         if (record.cmd() == SocketCMD.UPDATE_CLIENT_CODE) {
             var json = record.toJson();

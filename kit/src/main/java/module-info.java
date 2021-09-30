@@ -23,4 +23,5 @@ module cn.navclub.xtm.kit {
     exports cn.navclub.xtm.kit.client;
     exports cn.navclub.xtm.kit.proxy.impl;
     exports cn.navclub.xtm.kit.enums;
+    exports cn.navclub.xtm.kit.encode;
 }

@@ -6,14 +6,14 @@ public interface XTClientListener {
     /**
      * {@link  XTClient} 状态发生改变回调此方法
      */
-    default void statusHandler(XTClientStatus oldStatus, XTClientStatus newStatus) {
+    default void statusHandler(XTClient client,XTClientStatus oldStatus, XTClientStatus newStatus) {
 
     }
 
     /**
      * 消息收到时触发该函数
      */
-    default void onMessage(RecordParser.Record record) {
+    default void onMessage(XTClient client, RecordParser.Record record) {
 
     }
 

@@ -3,6 +3,7 @@ package cn.navclub.xtm.kit.decode.impl;
 import cn.navclub.xtm.kit.decode.RecordParser;
 import cn.navclub.xtm.kit.enums.ClientStatus;
 import cn.navclub.xtm.kit.enums.SocketCMD;
+import cn.navclub.xtm.kit.enums.TCPDirection;
 import cn.navclub.xtm.kit.util.ByteUtil;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
@@ -17,7 +18,9 @@ import io.vertx.core.buffer.Buffer;
  *        <th>2</th>
  *        <th>3-6</th>
  *        <th>7-10</th>
- *        <th>10-13</th>
+ *        <th>11-14</th>
+ *        <th>15-18</th>
+ *        <th>19</th>
  *        <th>......</th>
  *     </tr>
  *     <tr>
@@ -25,8 +28,10 @@ import io.vertx.core.buffer.Buffer;
  *        <td>T</td>
  *        <td>数据类型</td>
  *        <td>目标地址</td>
+ *        <td>源地址</td>
  *        <th>消息状态</th>
  *        <td>数据长度</td>
+ *        <td>消息方向{@link TCPDirection}</td>
  *        <td>真实数据</td>
  *     </tr>
  * </table>
@@ -39,7 +44,7 @@ public class RecordParserImpl implements RecordParser {
     /**
      * 数据包头长度
      */
-    private static final int HEADER_LENGTH = 15;
+    private static final int HEADER_LENGTH = 20;
 
 
     private Handler<Record> handler;
@@ -65,9 +70,10 @@ public class RecordParserImpl implements RecordParser {
             return;
         }
         parsing = true;
-        var i = 0;
+
         try {
             do {
+                var i = 0;
                 var arr = this.buffer.getBytes();
                 //数据头长度不够=>不处理
                 if (arr.length < HEADER_LENGTH) {
@@ -80,21 +86,36 @@ public class RecordParserImpl implements RecordParser {
                     return;
                 }
                 var cmd = arr[i + 2];
+                //目标地址
                 var addr = ByteUtil.byte2int(this.buffer.getBytes(3, 7));
-                var status = ByteUtil.byte2int(this.buffer.getBytes(7, 11));
-                var len = ByteUtil.byte2int(this.buffer.getBytes(11, 15));
+                //源地址
+                var sourceAddr = ByteUtil.byte2int(this.buffer.getBytes(7, 11));
+                //消息状态
+                var status = ByteUtil.byte2int(this.buffer.getBytes(11, 15));
+                //消息长度
+                var len = ByteUtil.byte2int(this.buffer.getBytes(15, 19));
+                //消息方向
+                var direction = this.buffer.getByte(19);
+
                 var maxLen = HEADER_LENGTH + len;
                 //数据长度不够=>不做处理
                 if (maxLen > this.buffer.length()) {
                     return;
                 }
-                var data = this.buffer.getBuffer(HEADER_LENGTH, maxLen);
+                final Buffer data;
+                if (len > 0) {
+                    data = this.buffer.getBuffer(HEADER_LENGTH, maxLen);
+                } else {
+                    data = null;
+                }
                 var record = new Record(
                         SocketCMD.getInstance(cmd),
                         addr,
+                        sourceAddr,
                         len,
                         data,
-                        ClientStatus.getInstance(status)
+                        ClientStatus.getInstance(status),
+                        TCPDirection.getInstance(direction)
                 );
                 this.handler.handle(record);
                 this.buffer = this.buffer.getBuffer(maxLen, this.buffer.length());
@@ -110,8 +131,8 @@ public class RecordParserImpl implements RecordParser {
         return this;
     }
 
-    @Override
-    public RecordParser exceptionHandler(Handler<Throwable> handler) {
+    @java.lang.Override
+    public RecordParser exceptionHandler(Handler<java.lang.Throwable> handler) {
         this.exceptHandler = handler;
         return this;
     }

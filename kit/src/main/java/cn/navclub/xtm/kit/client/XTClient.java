@@ -4,15 +4,16 @@ import cn.navclub.xtm.kit.decode.RecordParser;
 import cn.navclub.xtm.kit.encode.SocketDataEncode;
 import cn.navclub.xtm.kit.enums.ClientStatus;
 import cn.navclub.xtm.kit.enums.SocketCMD;
+import cn.navclub.xtm.kit.enums.TCPDirection;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.net.NetSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -24,13 +25,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class XTClient {
     private static final Logger LOG = LoggerFactory.getLogger(XTClient.class);
 
+    private volatile NetSocket socket;
+
     private final XTClientBuilder builder;
 
     private final List<XTClientListener> listeners;
 
     private volatile AtomicReference<XTClientStatus> statusRef;
-
-    private volatile NetSocket socket;
 
 
     protected XTClient(XTClientBuilder builder) {
@@ -67,11 +68,11 @@ public class XTClient {
         this.socket = socket;
         var parser = RecordParser.create();
         parser.handler(record -> {
-            LOG.info("Receive TCP Msg[cmd:{},addr:{},len:{}byte]", record.cmd(), record.address(), record.length());
+            LOG.info("Receive TCP Package [Direction:{},Cmd:{},Source Address:{},Data Length:{} byte]",record.direction(), record.cmd(), record.sourceAddr(), record.length());
             //投递消息
             for (XTClientListener listener : this.listeners) {
                 try {
-                    listener.onMessage(record);
+                    listener.onMessage(this, record);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -81,12 +82,11 @@ public class XTClient {
         this.socket.handler(parser::handle);
     }
 
-    public Future<Void> send(SocketCMD cmd, ClientStatus clientStatus, JsonObject json) {
+    public Future<Void> send(Buffer buffer) {
         var status = this.statusRef.get();
         if (status != XTClientStatus.CONNECTED) {
             return Future.failedFuture("当前连接不可用,连接状态:[" + status.getMessage() + "]");
         }
-        var buffer = SocketDataEncode.encodeJson(cmd, clientStatus,0, json);
         var promise = Promise.<Void>promise();
         var future = this.socket.write(buffer);
         future.onComplete(ar -> {
@@ -132,7 +132,7 @@ public class XTClient {
         var oldStatus = this.statusRef.get();
         this.statusRef.set(status);
         for (XTClientListener service : this.listeners) {
-            service.statusHandler(oldStatus, status);
+            service.statusHandler(this, oldStatus, status);
         }
     }
 }
