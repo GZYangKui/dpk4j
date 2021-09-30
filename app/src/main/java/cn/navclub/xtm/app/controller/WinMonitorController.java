@@ -2,6 +2,7 @@ package cn.navclub.xtm.app.controller;
 
 import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 
+import cn.navclub.xtm.app.config.XTApp;
 import cn.navclub.xtm.app.util.FFmpegUtil;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameRecorderProxy;
@@ -18,7 +19,6 @@ import org.bytedeco.javacv.FFmpegLogCallback;
 import org.bytedeco.javacv.Frame;
 
 
-
 /**
  * 远程操作主窗口
  *
@@ -28,40 +28,25 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     @FXML
     private HBox bBox;
     @FXML
-    private MenuBar menuBar;
-    @FXML
     private Canvas canvas;
 
     private final FFmpegFrameGrabberProxy fProxy;
 
-    private final FFmpegFrameRecorderProxy fRecord;
 
-
-    public WinMonitorController(final String serverIP,final String screenID) {
+    public WinMonitorController(final Integer robotId) {
         super("WinMonitorView.fxml");
         this.getStage().setTitle("x-terminal");
         var rect = Screen.getPrimary().getBounds();
-        this.fRecord = FFmpegFrameRecorderProxy.createProxy();
-
-        FFmpegLogCallback.set();
-
-        this.fRecord
-                .setFilename(String.format("rtmp://%s/myapp",serverIP))
-                .setFormat("flv")
-                .setImgWidth(1920)
-                .setImgHeight(1080);
-
-        this.fRecord.start();
 
         //初始化FFmpeg
         this.fProxy = FFmpegFrameGrabberProxy.createGraProxy();
 
         this.fProxy
                 .setCallback(this::onReceive)
-                .setFilename(":"+screenID+"+" + screenID + "," + 0)
+                .setFilename(String.format("rtmp://%s/myapp?robotId=%d", XTApp.getInstance().getHost(), robotId))
                 .setImgWidth((int) rect.getWidth())
                 .setImgHeight((int) rect.getHeight())
-                .setFormat("x11grab")
+                .setFormat("flv")
                 .start();
 
         this.canvas.addEventFilter(MouseEvent.ANY, event -> {
@@ -83,9 +68,6 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
             context.clearRect(0, 0, width, height);
             context.drawImage(wi, 0, 0, width, height);
         });
-
-        this.fRecord.push(frame);
-
     }
 
     @Override
@@ -99,6 +81,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     public void onRequestClose(WindowEvent event) {
         super.onRequestClose(event);
         this.fProxy.stop();
+        MainViewController.newInstance().openWindow();
     }
 
     /**
@@ -107,9 +90,9 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     private double realHei() {
         var parent = getParent();
         var a = parent.getHeight();
-        var b = this.menuBar.getHeight();
+//        var b = this.menuBar.getHeight();
         var c = this.bBox.getHeight();
-        return a - b - c;
+        return a - c;
     }
 
 }

@@ -22,13 +22,22 @@ task copyDepencies(type: Copy) {
         def path = file.absolutePath
         def index = path.lastIndexOf("/")
         def filename = path.substring(index + 1);
-        return filename.contains("netty") || filename.contains("vertx") || filename.startsWith("javafx")
+//        return filename.contains("netty") || filename.contains("vertx") || filename.startsWith("javafx")
+        return filename.startsWith("javafx")
+
     }
 }
 
 jar {
+//    from {
+//        configurations.runtimeClasspath.collect {
+//            if (it.name.contains("vertx") || it.name.contains("netty")){
+//                zipTree(it)
+//            }
+//        }
+//    }
     archivesBaseName = "xtm"
-    duplicatesStrategy=DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Main-Class': "$mainClassName"
     }

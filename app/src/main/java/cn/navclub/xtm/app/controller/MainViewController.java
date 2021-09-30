@@ -1,6 +1,7 @@
 package cn.navclub.xtm.app.controller;
 
 import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
+import cn.navclub.xtm.app.config.XTApp;
 import cn.navclub.xtm.app.control.MainWinControl;
 import cn.navclub.xtm.app.control.NavListItem;
 
@@ -13,7 +14,6 @@ import cn.navclub.xtm.kit.client.XTClientStatus;
 import cn.navclub.xtm.kit.encode.SocketDataEncode;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -53,8 +53,8 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
 
         this.xtClient = XTClientBuilder
                 .newBuilder(Vertx.vertx())
-                .setHost("127.0.0.1")
-                .setPort(8888)
+                .setHost(XTApp.getInstance().getHost())
+                .setPort(XTApp.getInstance().getPort())
                 .build();
 
         this.xtClient.addListener(this);

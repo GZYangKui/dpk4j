@@ -9,7 +9,7 @@ module cn.navclub.xtm.kit {
     requires transitive com.fasterxml.jackson.core;
     requires transitive com.fasterxml.jackson.databind;
 
-    requires static io.vertx.core;
+    requires io.vertx.core;
 
     //根据各个平台自由切换
     requires transitive org.bytedeco.ffmpeg.linux.x86_64;

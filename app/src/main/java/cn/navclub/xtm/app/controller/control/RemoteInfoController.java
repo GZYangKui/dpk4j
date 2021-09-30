@@ -4,6 +4,8 @@ import cn.navclub.xtm.app.base.AbstractFXMLController;
 import cn.navclub.xtm.app.config.Constants;
 import cn.navclub.xtm.app.config.XTApp;
 import cn.navclub.xtm.app.controller.MainViewController;
+import cn.navclub.xtm.app.controller.WinGrabController;
+import cn.navclub.xtm.app.controller.WinMonitorController;
 import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.decode.RecordParser;
@@ -12,6 +14,7 @@ import cn.navclub.xtm.kit.enums.ClientStatus;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import cn.navclub.xtm.kit.enums.TCPDirection;
 import cn.navclub.xtm.kit.util.StrUtil;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -55,7 +58,7 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
         update.setOnAction(event -> this.rdPw());
     }
 
-    private void rdPw(){
+    private void rdPw() {
         var str = StrUtil.rdStr(6, true);
         XTApp.getInstance().setRobotPw(str);
         this.password.setText(str);
@@ -70,10 +73,52 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
             //更新验证码
             this.updateCode(Integer.parseInt(code));
         }
-        if (record.cmd() == SocketCMD.REQUEST_REMOTE && record.direction() == TCPDirection.RESPONSE) {
-            if (record.status()== ClientStatus.OFFLINE){
+        //处理远程连接请求
+        if (record.cmd() == SocketCMD.REQUEST_REMOTE && record.direction() == TCPDirection.REQUEST) {
+            var json = record.toJson();
+            var pw = XTApp.getInstance().getRobotPw();
+            var temp = json.getString(Constants.PASSWORD);
+            final Buffer buffer;
+            //口令错误
+            if (!pw.equals(temp)) {
+                buffer = SocketDataEncode.restResponse(
+                        record.cmd(),
+                        ClientStatus.UNAUTHORIZED,
+                        record.sourceAddr(),
+                        null
+                );
+            } else if (XTApp.getInstance().isRemoting()) {
+                buffer = SocketDataEncode.restResponse(
+                        record.cmd(),
+                        ClientStatus.CLIENT_BUSY,
+                        record.sourceAddr(),
+                        null
+                );
+            } else {
+                buffer = SocketDataEncode.restResponse(
+                        record.cmd(),
+                        ClientStatus.OK,
+                        record.sourceAddr(),
+                        null
+                );
                 Platform.runLater(()->{
-                    Notifications.create().text("目标主机离线!").position(Pos.TOP_RIGHT).showWarning();
+                    MainViewController.newInstance().getStage().hide();
+                    new WinGrabController(record.sourceAddr()).openWindow();
+                });
+            }
+            client.send(buffer);
+        }
+        //处理远程连接响应结果
+        if (record.cmd() == SocketCMD.REQUEST_REMOTE && record.direction() == TCPDirection.RESPONSE) {
+            if (record.status() != ClientStatus.OK) {
+                Platform.runLater(() -> Notifications
+                        .create()
+                        .text(record.status().getMessage())
+                        .position(Pos.TOP_RIGHT).showWarning());
+            }else {
+                Platform.runLater(()->{
+                    MainViewController.newInstance().getStage().hide();
+                    new WinMonitorController(record.sourceAddr()).openWindow();
                 });
             }
         }
@@ -99,7 +144,7 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
             return;
         }
         var code = Integer.parseInt(str);
-        if (code==XTApp.getInstance().getRobotCode()){
+        if (code == XTApp.getInstance().getRobotCode()) {
             Notifications
                     .create()
                     .text("不允许目标主机与当前主机一致!")

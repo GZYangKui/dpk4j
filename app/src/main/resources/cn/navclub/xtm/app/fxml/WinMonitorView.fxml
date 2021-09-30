@@ -13,17 +13,17 @@
             prefWidth="800"
             prefHeight="600"
             stylesheets="/cn/navclub/xtm/app/css/WinMonitorViewStyle.css">
-    <top>
-        <MenuBar fx:id="menuBar">
-            <Menu text="文件">
-                <MenuItem text="聊天"/>
-                <MenuItem text="语音"/>
-                <MenuItem text="录像"/>
-                <MenuItem text="截图"/>
-                <MenuItem text="退出"/>
-            </Menu>
-        </MenuBar>
-    </top>
+<!--    <top>-->
+<!--        <MenuBar fx:id="menuBar">-->
+<!--            <Menu text="文件">-->
+<!--                <MenuItem text="聊天"/>-->
+<!--                <MenuItem text="语音"/>-->
+<!--                <MenuItem text="录像"/>-->
+<!--                <MenuItem text="截图"/>-->
+<!--                <MenuItem text="退出"/>-->
+<!--            </Menu>-->
+<!--        </MenuBar>-->
+<!--    </top>-->
     <center>
         <Canvas fx:id="canvas"/>
     </center>

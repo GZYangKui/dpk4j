@@ -13,7 +13,6 @@ J_LINK_MODULES="\
 org.slf4j,\
 javafx.controls,\
 com.dlsc.formsfx,\
-cn.navclub.xtm.kit,\
 org.bytedeco.javacv,\
 org.bytedeco.opencv,\
 org.bytedeco.ffmpeg,\
@@ -21,7 +20,9 @@ org.bytedeco.javacpp,\
 org.bytedeco.openblas,\
 org.controlsfx.controls,\
 org.kordamp.ikonli.javafx,\
+com.fasterxml.jackson.core,\
 javafx.graphics,javafx.fxml,\
+com.fasterxml.jackson.databind,\
 org.bytedeco.ffmpeg.linux.x86_64,\
 org.bytedeco.opencv.linux.x86_64,\
 org.bytedeco.openblas.linux.x86_64"
