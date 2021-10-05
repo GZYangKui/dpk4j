@@ -22,6 +22,7 @@ public class SocketDataEncode {
         var buffer = Buffer.buffer(temp);
         //添加目标地址(平台地址为0)
         buffer.appendBytes(ByteUtil.int2byte(target));
+        //添加消息来源
         buffer.appendBytes(ByteUtil.int2byte(source));
         //添加消息状态
         buffer.appendBytes(ByteUtil.int2byte(clientStatus.getStatus()));

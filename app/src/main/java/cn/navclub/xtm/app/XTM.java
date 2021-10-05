@@ -15,9 +15,6 @@ import javafx.stage.Stage;
 public class XTM extends Application {
 
     public static void main(String[] args) {
-        for (Module module : ModuleLayer.boot().modules()) {
-            System.out.println(module.getName());
-        }
         System.setProperty("org.bytedeco.javacpp.logger.debug","true");
         launch(args);
     }
@@ -25,7 +22,7 @@ public class XTM extends Application {
     @Override
     public void start(Stage primaryStage) {
         XTApp.getInstance()
-                .setHost("192.168.0.104")
+                .setHost("127.0.0.1")
                 .setPort(8888);
         MainViewController.newInstance().openWindow();
     }

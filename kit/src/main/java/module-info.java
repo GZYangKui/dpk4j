@@ -1,4 +1,6 @@
 module cn.navclub.xtm.kit {
+    requires io.vertx.core;
+
     requires transitive org.slf4j;
     requires transitive org.bytedeco.javacv;
     requires transitive org.bytedeco.opencv;
@@ -8,8 +10,6 @@ module cn.navclub.xtm.kit {
 
     requires transitive com.fasterxml.jackson.core;
     requires transitive com.fasterxml.jackson.databind;
-
-    requires io.vertx.core;
 
     //根据各个平台自由切换
     requires transitive org.bytedeco.ffmpeg.linux.x86_64;

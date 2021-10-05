@@ -144,13 +144,13 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
             return;
         }
         var code = Integer.parseInt(str);
-        if (code == XTApp.getInstance().getRobotCode()) {
-            Notifications
-                    .create()
-                    .text("不允许目标主机与当前主机一致!")
-                    .position(Pos.TOP_RIGHT).showWarning();
-            return;
-        }
+//        if (code == XTApp.getInstance().getRobotCode()) {
+//            Notifications
+//                    .create()
+//                    .text("不允许目标主机与当前主机一致!")
+//                    .position(Pos.TOP_RIGHT).showWarning();
+//            return;
+//        }
         var buf = SocketDataEncode.restRequest(
                 SocketCMD.REQUEST_REMOTE,
                 code,
