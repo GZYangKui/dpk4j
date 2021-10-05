@@ -18,6 +18,10 @@ public class XTApp {
      */
     private Integer port;
     /**
+     * 远程连接机器识别码
+     */
+    private Integer remoteCode;
+    /**
      * 判断是否正在远程/接受远程中
      */
     private volatile boolean remoting;
@@ -59,6 +63,15 @@ public class XTApp {
     public XTApp setRemoting(boolean remoting) {
         this.remoting = remoting;
         return this;
+    }
+
+    public XTApp setRemoteCode(Integer remoteCode) {
+        this.remoteCode = remoteCode;
+        return this;
+    }
+
+    public Integer getRemoteCode() {
+        return remoteCode;
     }
 
     public Integer getPort() {

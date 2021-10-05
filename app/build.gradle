@@ -16,28 +16,20 @@ javafx {
 task copyDepencies(type: Copy) {
     from configurations.runtimeClasspath
     into '../jlink-script/modules'
-    //排除netty及其vertx相关依赖
+
+    //排除javafx相关依赖
     exclude { t ->
         def file = t.file as File
         def path = file.absolutePath
         def index = path.lastIndexOf("/")
         def filename = path.substring(index + 1);
-//        return filename.contains("netty") || filename.contains("vertx") || filename.startsWith("javafx")
         return filename.startsWith("javafx")
 
     }
 }
 
 jar {
-//    from {
-//        configurations.runtimeClasspath.collect {
-//            if (it.name.contains("vertx") || it.name.contains("netty")){
-//                zipTree(it)
-//            }
-//        }
-//    }
     archivesBaseName = "xtm"
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Main-Class': "$mainClassName"
     }

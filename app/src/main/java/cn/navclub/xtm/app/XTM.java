@@ -15,14 +15,13 @@ import javafx.stage.Stage;
 public class XTM extends Application {
 
     public static void main(String[] args) {
-        System.setProperty("org.bytedeco.javacpp.logger.debug","true");
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
         XTApp.getInstance()
-                .setHost("127.0.0.1")
+                .setHost("192.168.3.112")
                 .setPort(8888);
         MainViewController.newInstance().openWindow();
     }

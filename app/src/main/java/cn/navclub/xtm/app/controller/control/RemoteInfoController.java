@@ -101,6 +101,7 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
                         record.sourceAddr(),
                         null
                 );
+                XTApp.getInstance().setRemoteCode(record.sourceAddr());
                 Platform.runLater(()->{
                     MainViewController.newInstance().getStage().hide();
                     new WinGrabController(record.sourceAddr()).openWindow();
@@ -116,6 +117,7 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
                         .text(record.status().getMessage())
                         .position(Pos.TOP_RIGHT).showWarning());
             }else {
+                XTApp.getInstance().setRemoteCode(record.sourceAddr());
                 Platform.runLater(()->{
                     MainViewController.newInstance().getStage().hide();
                     new WinMonitorController(record.sourceAddr()).openWindow();

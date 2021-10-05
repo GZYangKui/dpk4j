@@ -2,21 +2,28 @@ package cn.navclub.xtm.app.controller;
 
 import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 
+import cn.navclub.xtm.app.config.Constants;
 import cn.navclub.xtm.app.config.XTApp;
 import cn.navclub.xtm.app.util.FFmpegUtil;
+import cn.navclub.xtm.kit.encode.SocketDataEncode;
+import cn.navclub.xtm.kit.enums.SocketCMD;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameRecorderProxy;
+import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.MenuBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.robot.Robot;
 import javafx.stage.Screen;
 import javafx.stage.WindowEvent;
 import org.bytedeco.javacv.FFmpegLogCallback;
 import org.bytedeco.javacv.Frame;
+import org.controlsfx.control.Notifications;
 
 
 /**
@@ -41,16 +48,49 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
         //初始化FFmpeg
         this.fProxy = FFmpegFrameGrabberProxy.createGraProxy();
 
-        this.fProxy
+        var future = this.fProxy
                 .setCallback(this::onReceive)
                 .setFilename(String.format("rtmp://%s/myapp?robotId=%d", XTApp.getInstance().getHost(), robotId))
                 .setImgWidth((int) rect.getWidth())
                 .setImgHeight((int) rect.getHeight())
                 .setFormat("flv")
-                .start();
+                .asyncStart();
+
+        future.whenComplete((r, t) -> {
+            if (t != null) {
+                Platform.runLater(() -> {
+                    Notifications.create().text("获取数据流失败!").showError();
+                    this.triggerClose(false);
+                    MainViewController.newInstance().openWindow();
+                });
+            }
+        });
 
         this.canvas.addEventFilter(MouseEvent.ANY, event -> {
+            var et = event.getEventType();
+            if (et == MouseEvent.MOUSE_MOVED) {
+                var x = event.getSceneX();
+                var y = event.getSceneY();
+                //获取当前场景图高度和宽度
+                var height = this.realHei();
+                var width = this.getStage().getWidth();
 
+                var json = new JsonObject();
+
+                json.put(Constants.X, x);
+                json.put(Constants.Y, y);
+
+                json.put(Constants.WIDTH, width);
+                json.put(Constants.HEIGHT, height);
+
+                var buffer = SocketDataEncode.restRequest(
+                        SocketCMD.MOUSE_ACTIVE,
+                        XTApp.getInstance().getRemoteCode(),
+                        json
+                );
+
+                MainViewController.newInstance().getXtClient().send(buffer);
+            }
         });
     }
 
@@ -60,7 +100,6 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
      */
     private void onReceive(Frame frame) {
         var wi = FFmpegUtil.toFXImage(frame);
-
         Platform.runLater(() -> {
             var width = this.canvas.getWidth();
             var height = this.canvas.getHeight();
@@ -90,7 +129,6 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     private double realHei() {
         var parent = getParent();
         var a = parent.getHeight();
-//        var b = this.menuBar.getHeight();
         var c = this.bBox.getHeight();
         return a - c;
     }

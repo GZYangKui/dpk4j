@@ -4,10 +4,11 @@ package cn.navclub.xtm.kit.enums;
  * 封装socket指令集
  */
 public enum SocketCMD {
-    UNKNOWN_CMD((byte) -1, "未知指令"),
+    UNKNOWN((byte) -1, "未知指令"),
     HEART_BEAT((byte) 0, "客户端心跳"),
+    UPDATE_CLIENT_CODE((byte) 1, "更新客户端识别码"),
     REQUEST_REMOTE((byte) 2, "请求远程控制"),
-    UPDATE_CLIENT_CODE((byte) 1, "更新客户端识别码");
+    MOUSE_ACTIVE((byte) 3, "鼠标动作");
 
     private final byte cmd;
     private final String message;
@@ -32,6 +33,6 @@ public enum SocketCMD {
                 return value;
             }
         }
-        return SocketCMD.UNKNOWN_CMD;
+        return SocketCMD.UNKNOWN;
     }
 }
