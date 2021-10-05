@@ -22,11 +22,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author yangkui
  */
 public class XTClient {
-    static {
-        for (Module module : ModuleLayer.boot().modules()) {
-            System.out.println(module.getName());
-        }
-    }
     private static final long DEFAULT_TIMER_ID = -1;
     private static final Logger LOG = LoggerFactory.getLogger(XTClient.class);
 

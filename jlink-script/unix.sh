@@ -11,12 +11,14 @@ fi
 # shellcheck disable=SC2034
 J_LINK_MODULES="\
 org.slf4j,\
+java.naming,\
 javafx.controls,\
 com.dlsc.formsfx,\
 org.bytedeco.javacv,\
 org.bytedeco.opencv,\
 org.bytedeco.ffmpeg,\
 org.bytedeco.javacpp,\
+ch.qos.logback.classic,\
 org.bytedeco.openblas,\
 org.controlsfx.controls,\
 org.kordamp.ikonli.javafx,\

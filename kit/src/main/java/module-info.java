@@ -2,6 +2,7 @@ module cn.navclub.xtm.kit {
     requires io.vertx.core;
 
     requires transitive org.slf4j;
+    requires transitive ch.qos.logback.classic;
     requires transitive org.bytedeco.javacv;
     requires transitive org.bytedeco.opencv;
     requires transitive org.bytedeco.ffmpeg;
