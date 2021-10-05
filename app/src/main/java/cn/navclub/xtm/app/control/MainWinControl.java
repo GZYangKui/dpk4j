@@ -34,17 +34,7 @@ public class MainWinControl extends HBox {
         close.getStyleClass().add("win-close");
         this.getChildren().addAll(func, min, close);
 
-        close.setOnAction(e -> {
-            var event = new WindowEvent(
-                    this.controller.getStage(),
-                    WindowEvent.WINDOW_HIDING
-            );
-            this.controller.onRequestClose(event);
-            //执行关闭窗口
-            if (!event.isConsumed()) {
-                this.controller.getStage().close();
-            }
-        });
+        close.setOnAction(e -> this.controller.triggerClose(false));
         min.setOnAction(event -> this.controller.getStage().setIconified(true));
 
         //注册拖拽事件

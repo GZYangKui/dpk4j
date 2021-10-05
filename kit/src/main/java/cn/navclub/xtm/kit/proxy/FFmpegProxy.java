@@ -5,11 +5,11 @@ import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameRecorderProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.CompletableFuture;
+
 
 /**
- *
  * 封装FFmpeg通用代理类
- *
  *
  * @author yangkui
  */
@@ -23,7 +23,6 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
     private String filename;
 
 
-
     public FFmpegProxy() {
         this.logger = LoggerFactory.getLogger(this.getClass());
     }
@@ -35,25 +34,33 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
     protected abstract void stop0() throws Exception;
 
     protected abstract void start0() throws Exception;
+
     /**
      * 启动代理类
      */
-    public void start(){
+    public void start() {
         try {
             this.start0();
-            this.logger.info("成功启动FFmpeg代理类:{}",this.getClass().getName());
+            this.logger.info("成功启动FFmpeg代理类:{}", this.getClass().getName());
         } catch (Exception e) {
-            logger.error("启动FFmpeg代理类失败",e);
+            logger.error("启动FFmpeg代理类失败", e);
             throw new RuntimeException(e);
         }
     }
 
-    public void stop(){
+    /**
+     * 执行异步启动代理类
+     */
+    public CompletableFuture<Void> asyncStart() {
+        return CompletableFuture.runAsync(this::start);
+    }
+
+    public void stop() {
         try {
             this.stop0();
-            this.logger.info("成功关闭FFmpeg代理类:{}",this.getClass().getName());
+            this.logger.info("成功关闭FFmpeg代理类:{}", this.getClass().getName());
         } catch (Exception e) {
-            logger.error("关闭FFmpeg代理类失败",e);
+            logger.error("关闭FFmpeg代理类失败", e);
             throw new RuntimeException(e);
         }
     }
@@ -91,8 +98,7 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
     }
 
 
-
-   public static FFmpegProxy createRdProxy() {
+    public static FFmpegProxy createRdProxy() {
         return new FFmpegFrameRecorderProxy();
     }
 

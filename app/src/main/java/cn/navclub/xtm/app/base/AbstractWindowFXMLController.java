@@ -59,4 +59,25 @@ public class AbstractWindowFXMLController<T extends Parent> extends AbstractFXML
     public Stage getStage() {
         return this.stage;
     }
+
+    /**
+     * 用于手动触发窗口关闭并触发{@link AbstractWindowFXMLController#onRequestClose(WindowEvent)}方法处理资源释放问题.</p>
+     */
+    public void triggerClose(boolean emitEx) {
+        var event = new WindowEvent(
+                this.getStage(),
+                WindowEvent.WINDOW_HIDING
+        );
+        try {
+            this.onRequestClose(event);
+        } catch (Exception e) {
+            if (emitEx) {
+                throw new RuntimeException(e);
+            }
+        }
+        //执行关闭窗口
+        if (!event.isConsumed()) {
+            this.getStage().close();
+        }
+    }
 }
