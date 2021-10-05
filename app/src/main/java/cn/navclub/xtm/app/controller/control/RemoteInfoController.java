@@ -6,6 +6,7 @@ import cn.navclub.xtm.app.config.XTApp;
 import cn.navclub.xtm.app.controller.MainViewController;
 import cn.navclub.xtm.app.controller.WinGrabController;
 import cn.navclub.xtm.app.controller.WinMonitorController;
+import cn.navclub.xtm.app.util.UIUtil;
 import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.decode.RecordParser;
@@ -25,6 +26,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.Notifications;
+import org.slf4j.helpers.Util;
 
 import java.text.DecimalFormat;
 
@@ -95,14 +97,17 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
                         null
                 );
             } else {
+                var rect = UIUtil.getSrnSize();
                 buffer = SocketDataEncode.restResponse(
                         record.cmd(),
                         ClientStatus.OK,
                         record.sourceAddr(),
-                        null
+                        new JsonObject()
+                                .put(Constants.WIDTH, rect.getWidth())
+                                .put(Constants.HEIGHT, rect.getHeight())
                 );
                 XTApp.getInstance().setRemoteCode(record.sourceAddr());
-                Platform.runLater(()->{
+                Platform.runLater(() -> {
                     MainViewController.newInstance().getStage().hide();
                     new WinGrabController(record.sourceAddr()).openWindow();
                 });
@@ -116,11 +121,16 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
                         .create()
                         .text(record.status().getMessage())
                         .position(Pos.TOP_RIGHT).showWarning());
-            }else {
+            } else {
                 XTApp.getInstance().setRemoteCode(record.sourceAddr());
-                Platform.runLater(()->{
+                Platform.runLater(() -> {
                     MainViewController.newInstance().getStage().hide();
-                    new WinMonitorController(record.sourceAddr()).openWindow();
+                    var data = record.toJson();
+                    //获取目标显示器宽度
+                    var width = data.getDouble(Constants.WIDTH);
+                    //获取目标显示器高度
+                    var height = data.getDouble(Constants.HEIGHT);
+                    new WinMonitorController(record.sourceAddr(), width, height).openWindow();
                 });
             }
         }

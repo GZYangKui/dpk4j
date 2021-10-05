@@ -5,6 +5,7 @@ import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 import cn.navclub.xtm.app.config.Constants;
 import cn.navclub.xtm.app.config.XTApp;
 import cn.navclub.xtm.app.util.FFmpegUtil;
+import cn.navclub.xtm.app.util.UIUtil;
 import cn.navclub.xtm.kit.encode.SocketDataEncode;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
@@ -39,20 +40,53 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
 
     private final FFmpegFrameGrabberProxy fProxy;
 
+    private final double width;
+    private final double height;
 
-    public WinMonitorController(final Integer robotId) {
+
+    public WinMonitorController(final Integer robotId, final double width, double height) {
         super("WinMonitorView.fxml");
-        this.getStage().setTitle("x-terminal");
-        var rect = Screen.getPrimary().getBounds();
 
-        //初始化FFmpeg
+        this.width = width;
+        this.height = height;
+        //初始化窗口大小
+        final double w, h;
+        var rect = UIUtil.getSrnSize();
+        if (width <= rect.getWidth() && height <= rect.getHeight()) {
+            w = width;
+            h = height;
+        } else {
+            w = rect.getWidth();
+            h = rect.getHeight();
+        }
+        this.getStage().setWidth(w);
+        this.getStage().setHeight(h);
+        this.getStage().setResizable(false);
+        this.getStage().setTitle("x-terminal");
+
+        this.canvas.addEventFilter(MouseEvent.ANY, this::filterMouseEvent);
+
+        //初始化FFMpeg
         this.fProxy = FFmpegFrameGrabberProxy.createGraProxy();
+        this.asyncInit(robotId);
+    }
+
+    /**
+     * 异步初始化{@link FFmpegFrameGrabberProxy} 代理类
+     */
+    private void asyncInit(int robotId) {
+
+        var filename = String.format(
+                "rtmp://%s/myapp?robotId=%d",
+                XTApp.getInstance().getHost(),
+                robotId
+        );
 
         var future = this.fProxy
                 .setCallback(this::onReceive)
-                .setFilename(String.format("rtmp://%s/myapp?robotId=%d", XTApp.getInstance().getHost(), robotId))
-                .setImgWidth((int) rect.getWidth())
-                .setImgHeight((int) rect.getHeight())
+                .setFilename(filename)
+                .setImgWidth((int) width)
+                .setImgHeight((int) height)
                 .setFormat("flv")
                 .asyncStart();
 
@@ -65,33 +99,13 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
                 });
             }
         });
+    }
 
-        this.canvas.addEventFilter(MouseEvent.ANY, event -> {
-            var et = event.getEventType();
-            if (et == MouseEvent.MOUSE_MOVED) {
-                var x = event.getSceneX();
-                var y = event.getSceneY();
-                //获取当前场景图高度和宽度
-                var height = this.realHei();
-                var width = this.getStage().getWidth();
+    /**
+     * 捕获画布上的鼠标事件并转发至被控制终端
+     */
+    private void filterMouseEvent(MouseEvent event) {
 
-                var json = new JsonObject();
-
-                json.put(Constants.X, x);
-                json.put(Constants.Y, y);
-
-                json.put(Constants.WIDTH, width);
-                json.put(Constants.HEIGHT, height);
-
-                var buffer = SocketDataEncode.restRequest(
-                        SocketCMD.MOUSE_ACTIVE,
-                        XTApp.getInstance().getRemoteCode(),
-                        json
-                );
-
-                MainViewController.newInstance().getXtClient().send(buffer);
-            }
-        });
     }
 
 
