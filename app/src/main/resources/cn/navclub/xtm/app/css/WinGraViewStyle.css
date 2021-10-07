@@ -3,8 +3,8 @@
     -fx-alignment: CENTER-LEFT;
     -fx-padding: .5em;
     -fx-spacing: .5em;
-    -fx-border-radius: .3em;
-    -fx-background-radius: .3em;
+    -fx-border-radius: .1em;
+    -fx-background-radius: .1em;
 }
 
 .box * {

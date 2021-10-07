@@ -4,6 +4,7 @@ import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 import cn.navclub.xtm.app.config.Constants;
 import cn.navclub.xtm.app.config.XTApp;
 import cn.navclub.xtm.app.event.WinDragEvent;
+import cn.navclub.xtm.app.util.UIUtil;
 import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.decode.RecordParser;
@@ -42,9 +43,9 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
         this.getStage().initStyle(StageStyle.TRANSPARENT);
         this.getStage().getScene().setFill(Color.TRANSPARENT);
 
-
-        this.remoteUser.setText(XTApp.getInstance().getRobotCode().toString());
         WinDragEvent.register(getStage(), this.box);
+        this.remoteUser.setText(XTApp.getInstance().getRobotCode().toString());
+
 
         MainViewController.newInstance().getXtClient().addListener(this);
 
@@ -98,6 +99,15 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
         this.fRecord.stop();
         this.fProxy.stop();
         MainViewController.newInstance().openWindow();
+    }
+
+    @Override
+    public void stageShowChange(boolean oldValue, boolean newValue) {
+        if (newValue){
+            var srnSize = UIUtil.getSrnSize();
+            this.getStage().setX(srnSize.getWidth()-this.box.getWidth());
+            this.getStage().setY(srnSize.getHeight()-this.box.getHeight()-10);
+        }
     }
 
     /**
