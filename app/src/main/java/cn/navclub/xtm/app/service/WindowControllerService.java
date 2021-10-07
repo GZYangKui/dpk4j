@@ -41,4 +41,13 @@ public interface WindowControllerService {
     default void windowSizeChange(double width,double height){
 
     }
+
+    /**
+     *
+     * 当窗口显示状态发生改变时触发该函数回调
+     *
+     */
+    default void stageShowChange(boolean oldValue,boolean newValue){
+
+    }
 }

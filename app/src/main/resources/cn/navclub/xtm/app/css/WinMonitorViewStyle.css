@@ -1,3 +1,27 @@
+.top-box {
+    -fx-background-color: #121212;
+}
+
+.top-box .left-box {
+    -fx-padding: 0 0 0 .1em;
+    -fx-spacing: .5em;
+}
+
+.top-box .label {
+    -fx-text-fill: #fff;
+}
+
+.top-box .button {
+    -fx-padding: .1em;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+}
+
+.top-box .right-box .button:hover {
+    -fx-background-color: #FF0042;
+}
+
 .b-box {
     -fx-background-color: #fff;
 }

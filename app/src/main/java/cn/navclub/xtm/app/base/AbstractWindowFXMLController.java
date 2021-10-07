@@ -20,8 +20,11 @@ public class AbstractWindowFXMLController<T extends Parent> extends AbstractFXML
 
     private final Stage stage;
 
+
     private final ChangeListener<Number> widthListener = this.windowChangeListener(false);
     private final ChangeListener<Number> heightListener = this.windowChangeListener(true);
+    private final ChangeListener<Boolean> showListener = ((observable, oldValue, newValue) -> this.stageShowChange(oldValue, newValue));
+
 
     public AbstractWindowFXMLController(String fxmlURL) {
         this(AssetsHelper.class.getResource(AssetsHelper.FXML_ROOT + fxmlURL));
@@ -31,9 +34,11 @@ public class AbstractWindowFXMLController<T extends Parent> extends AbstractFXML
         super(fxmlURL);
         this.stage = new Stage();
         this.stage.setScene(new Scene(this.getParent()));
+
         //注册请求关闭事件
         this.stage.setOnCloseRequest(this::onRequestClose);
         this.stage.widthProperty().addListener(this.widthListener);
+        this.stage.showingProperty().addListener(this.showListener);
         this.stage.heightProperty().addListener(this.heightListener);
 
         this.stage.getIcons().addAll(LOGOS);
@@ -52,6 +57,7 @@ public class AbstractWindowFXMLController<T extends Parent> extends AbstractFXML
     @Override
     public void onRequestClose(WindowEvent event) {
         this.stage.widthProperty().removeListener(this.widthListener);
+        this.stage.showingProperty().removeListener(this.showListener);
         this.stage.heightProperty().removeListener(this.heightListener);
     }
 

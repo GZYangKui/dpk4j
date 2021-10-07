@@ -3,6 +3,7 @@ package cn.navclub.xtm.app.controller;
 import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 import cn.navclub.xtm.app.config.Constants;
 import cn.navclub.xtm.app.config.XTApp;
+import cn.navclub.xtm.app.event.WinDragEvent;
 import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.decode.RecordParser;
@@ -10,10 +11,14 @@ import cn.navclub.xtm.kit.enums.SocketCMD;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameRecorderProxy;
 import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.robot.Robot;
 import javafx.stage.Screen;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.controlsfx.control.Notifications;
 
@@ -25,14 +30,27 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
 
     private final FFmpegFrameRecorderProxy fRecord;
 
+    @FXML
+    private HBox box;
+    @FXML
+    private Label remoteUser;
+
     public WinGrabController(final Integer robotId) {
         super("WinGrabView.fxml");
         this.robot = new Robot();
-        this.fRecord = FFmpegFrameRecorderProxy.createProxy();
-        //初始化FFmpeg
-        this.fProxy = FFmpegFrameGrabberProxy.createGraProxy();
+        this.getStage().setAlwaysOnTop(true);
+        this.getStage().initStyle(StageStyle.TRANSPARENT);
+        this.getStage().getScene().setFill(Color.TRANSPARENT);
+
+
+        this.remoteUser.setText(XTApp.getInstance().getRobotCode().toString());
+        WinDragEvent.register(getStage(), this.box);
 
         MainViewController.newInstance().getXtClient().addListener(this);
+
+        this.fRecord = FFmpegFrameRecorderProxy.createProxy();
+        this.fProxy = FFmpegFrameGrabberProxy.createGraProxy();
+
         this.asyncInit(robotId);
     }
 
@@ -103,24 +121,24 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
             var w = json.getDouble(Constants.WIDTH);
             var h = json.getDouble(Constants.HEIGHT);
 
-            this.updateMousePos(x,y,w,h);
+            this.updateMousePos(x, y, w, h);
         }
     }
 
     /**
      * 根据比例计算出真实x和y位置
      */
-    private void updateMousePos(double x,double y,double w,double h){
+    private void updateMousePos(double x, double y, double w, double h) {
         var rect = Screen.getPrimary().getBounds();
 
-        var pw = w/rect.getWidth();
-        var ph = h/rect.getHeight();
+        var pw = w / rect.getWidth();
+        var ph = h / rect.getHeight();
 
-        var rx = x*pw;
+        var rx = x * pw;
         var ry = y * ph;
 
         System.out.println("rx=" + rx + ",ry=" + ry);
 
-        Platform.runLater(()-> robot.mouseMove(new Point2D(rx,ry)));
+        Platform.runLater(() -> robot.mouseMove(new Point2D(rx, ry)));
     }
 }

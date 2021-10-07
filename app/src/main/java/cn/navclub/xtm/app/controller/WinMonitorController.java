@@ -2,30 +2,22 @@ package cn.navclub.xtm.app.controller;
 
 import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 
-import cn.navclub.xtm.app.config.Constants;
 import cn.navclub.xtm.app.config.XTApp;
+import cn.navclub.xtm.app.event.WinDragEvent;
 import cn.navclub.xtm.app.util.FFmpegUtil;
 import cn.navclub.xtm.app.util.UIUtil;
-import cn.navclub.xtm.kit.encode.SocketDataEncode;
-import cn.navclub.xtm.kit.enums.SocketCMD;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
-import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameRecorderProxy;
-import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.robot.Robot;
-import javafx.stage.Screen;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-import org.bytedeco.javacv.FFmpegLogCallback;
 import org.bytedeco.javacv.Frame;
 import org.controlsfx.control.Notifications;
-
 
 /**
  * 远程操作主窗口
@@ -33,48 +25,45 @@ import org.controlsfx.control.Notifications;
  * @author yangkui
  */
 public class WinMonitorController extends AbstractWindowFXMLController<BorderPane> {
+
     @FXML
-    private HBox bBox;
+    private HBox topBox;
     @FXML
     private Canvas canvas;
+    @FXML
+    private Label robotInfo;
 
     private final FFmpegFrameGrabberProxy fProxy;
 
-    private final double width;
-    private final double height;
 
 
     public WinMonitorController(final Integer robotId, final double width, double height) {
         super("WinMonitorView.fxml");
 
-        this.width = width;
-        this.height = height;
-        //初始化窗口大小
-        final double w, h;
+
+        this.robotInfo.setText("远程控制 "+robotId);
+
+        WinDragEvent.register(getStage(),this.topBox);
+
         var rect = UIUtil.getSrnSize();
-        if (width <= rect.getWidth() && height <= rect.getHeight()) {
-            w = width;
-            h = height;
-        } else {
-            w = rect.getWidth();
-            h = rect.getHeight();
-        }
-        this.getStage().setWidth(w);
-        this.getStage().setHeight(h);
+        //设置当前窗口大小
         this.getStage().setResizable(false);
-        this.getStage().setTitle("x-terminal");
+        this.getStage().setWidth(rect.getWidth()*.9);
+        this.getStage().setHeight(rect.getHeight()*.9);
+        this.getStage().initStyle(StageStyle.UNDECORATED);
+
 
         this.canvas.addEventFilter(MouseEvent.ANY, this::filterMouseEvent);
 
         //初始化FFMpeg
         this.fProxy = FFmpegFrameGrabberProxy.createGraProxy();
-        this.asyncInit(robotId);
+        this.asyncInit(robotId,width,height);
     }
 
     /**
      * 异步初始化{@link FFmpegFrameGrabberProxy} 代理类
      */
-    private void asyncInit(int robotId) {
+    private void asyncInit(int robotId,double width,double height) {
 
         var filename = String.format(
                 "rtmp://%s/myapp?robotId=%d",
@@ -123,11 +112,24 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
         });
     }
 
+    @FXML
+    private void requestClose(){
+        this.triggerClose(false);
+    }
+
+    @FXML
+    private void requestIconified(){
+        this.getStage().setIconified(true);
+    }
+
+
     @Override
-    public void windowSizeChange(double width, double height) {
-        this.canvas.setWidth(width);
-        //重新计算画布实际高度
-        this.canvas.setHeight(this.realHei());
+    public void stageShowChange(boolean oldValue, boolean newValue) {
+        if (!newValue){
+            return;
+        }
+        this.canvas.setHeight(realHei());
+        this.canvas.setWidth(this.getStage().getWidth());
     }
 
     @Override
@@ -143,7 +145,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     private double realHei() {
         var parent = getParent();
         var a = parent.getHeight();
-        var c = this.bBox.getHeight();
+        var c = this.topBox.getHeight();
         return a - c;
     }
 

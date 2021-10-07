@@ -6,8 +6,28 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <HBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="400.0" prefWidth="600.0">
-
+      styleClass="box"
+      fx:id="box"
+      xmlns:fx="http://javafx.com/fxml" stylesheets="/cn/navclub/xtm/app/css/WinGraViewStyle.css">
+    <HBox HBox.hgrow="ALWAYS">
+        <ImageView>
+            <Image url="/cn/navclub/xtm/app/img/logo@1x.png"/>
+        </ImageView>
+        <Label fx:id="remoteUser"/>
+    </HBox>
+    <HBox>
+        <Button>
+            <tooltip>
+                <Tooltip text="断开远程连接"/>
+            </tooltip>
+            <graphic>
+                <ImageView>
+                    <Image url="/cn/navclub/xtm/app/img/end_remote.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
+    </HBox>
 </HBox>

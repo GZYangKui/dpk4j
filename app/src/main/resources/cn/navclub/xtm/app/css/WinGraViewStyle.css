@@ -1,0 +1,22 @@
+.box {
+    -fx-background-color: #1f1f1f;
+    -fx-alignment: CENTER-LEFT;
+    -fx-padding: .5em;
+    -fx-spacing: .5em;
+    -fx-border-radius: .3em;
+    -fx-background-radius: .3em;
+}
+
+.box * {
+    -fx-text-fill: #fff;
+}
+
+
+.box .button{
+    -fx-background-color: transparent;
+}
+
+.box HBox {
+    -fx-alignment: CENTER-LEFT;
+    -fx-spacing: .5em;
+}
