@@ -15,8 +15,8 @@ public interface WindowControllerService {
      */
     default void openWindow() {
         var stage = this.getStage();
-        stage.toFront();
         stage.show();
+        stage.toFront();
     }
 
     /**
