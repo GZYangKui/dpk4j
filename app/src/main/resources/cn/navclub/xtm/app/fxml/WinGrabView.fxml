@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -19,7 +16,7 @@
         <Label fx:id="remoteUser"/>
     </HBox>
     <HBox>
-        <Button>
+        <Button onAction="#stop">
             <tooltip>
                 <Tooltip text="断开远程连接"/>
             </tooltip>

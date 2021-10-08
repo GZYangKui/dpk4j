@@ -25,6 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
@@ -44,6 +45,8 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     @FXML
     private Canvas canvas;
     @FXML
+    private VBox contentBox;
+    @FXML
     private Label robotInfo;
     @FXML
     private ScrollPane scrollPane;
@@ -54,10 +57,10 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
      */
     private boolean maxWin;
 
-    private double wScala = .9;
 
     private final double width;
     private final double height;
+    private final double wScala = .9;
     private final FFmpegFrameGrabberProxy fProxy;
 
     private static final Image MAX_ICON = AssetsHelper.loadImg("win/max@1x.png");
@@ -148,8 +151,13 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
             //获取水平滚动偏移量
             var scrollH = this.scrollPane.getHvalue() * lh;
 
-            var x = event.getSceneX() + scrollH;
-            var y = event.getSceneY() + scrollV - this.topBox.getHeight();
+            //如果目标显示器分比率小于默认窗体大小,计算VBox与canvas之间的间隔
+            var hs = (this.contentBox.getWidth() - this.canvas.getWidth()) / 2;
+            var vs = (this.contentBox.getHeight() - this.canvas.getHeight()) / 2;
+
+
+            var x = event.getSceneX() + scrollH - hs;
+            var y = event.getSceneY() + scrollV - this.topBox.getHeight()-vs;
 
             var json = new JsonObject()
                     .put(Constants.X, x)

@@ -148,4 +148,8 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
             });
         }
     }
+    @FXML
+    private void stop(){
+        this.triggerClose(false);
+    }
 }

@@ -28,6 +28,13 @@
 }
 
 .scroll-pane {
+    -fx-padding: 0;
     -fx-border-width: 0;
+    -fx-border-insets: 0;
     -fx-background-insets: 0;
+    -fx-background-color: transparent;
+}
+
+.content-box {
+    -fx-background-color: #000000;
 }

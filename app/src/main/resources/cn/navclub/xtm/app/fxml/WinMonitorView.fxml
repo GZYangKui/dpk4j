@@ -53,7 +53,7 @@
     </top>
     <center>
         <ScrollPane fx:id="scrollPane" styleClass="scroll-pane" fitToWidth="true" fitToHeight="true">
-            <VBox alignment="center">
+            <VBox alignment="center" fx:id="contentBox" styleClass="content-box">
                 <Canvas fx:id="canvas"/>
             </VBox>
         </ScrollPane>
