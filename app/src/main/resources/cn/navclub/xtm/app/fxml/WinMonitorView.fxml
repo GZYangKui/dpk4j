@@ -27,6 +27,13 @@
                 <Label fx:id="robotInfo"/>
             </HBox>
             <HBox HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT" styleClass="right-box">
+                <Button onAction="#requestWSize" fx:id="wsBtn">
+                    <graphic>
+                        <ImageView>
+                            <Image url="/cn/navclub/xtm/app/img/win/max@1x.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
                 <Button onAction="#requestIconified">
                     <graphic>
                         <ImageView>
@@ -45,8 +52,10 @@
         </HBox>
     </top>
     <center>
-        <ScrollPane fx:id="scrollPane" fitToWidth="true" fitToHeight="true">
-            <Canvas fx:id="canvas"/>
+        <ScrollPane fx:id="scrollPane" styleClass="scroll-pane" fitToWidth="true" fitToHeight="true">
+            <VBox alignment="center">
+                <Canvas fx:id="canvas"/>
+            </VBox>
         </ScrollPane>
     </center>
 </BorderPane>

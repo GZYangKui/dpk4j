@@ -6,7 +6,11 @@ public enum MouseAction {
      */
     MOUSE_MOVE,
     /**
-     * 鼠标点击
+     * 鼠标按下
      */
-    MOUSE_CLICKED
+    MOUSE_PRESSED,
+    /**
+     * 鼠标释放
+     */
+    MOUSE_RELEASED
 }

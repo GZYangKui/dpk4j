@@ -45,7 +45,7 @@
 }
 
 .win_control .button {
-    -fx-padding: .2em;
+    -fx-padding: .7em;
 }
 
 .win_control .button, .win_control .menu-button {
@@ -59,7 +59,7 @@
     -fx-background-radius: 0;
 }
 
-.status-box{
+.status-box {
     -fx-spacing: .4em;
     -fx-alignment: CENTER-LEFT;
 }

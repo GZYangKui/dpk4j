@@ -14,4 +14,13 @@ public class UIUtil {
     public static Rectangle2D getSrnSize(){
         return SCREEN.getBounds();
     }
+
+    /**
+     *
+     *  获取屏幕可见区域尺寸
+     *
+     */
+    public static Rectangle2D getVSrnSize(){
+        return SCREEN.getVisualBounds();
+    }
 }
