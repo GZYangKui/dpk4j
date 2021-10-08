@@ -4,5 +4,9 @@ public enum MouseAction {
     /**
      * 鼠标移动
      */
-    MOUSE_MOVE
+    MOUSE_MOVE,
+    /**
+     * 鼠标点击
+     */
+    MOUSE_CLICKED
 }

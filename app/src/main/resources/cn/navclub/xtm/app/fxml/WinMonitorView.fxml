@@ -8,6 +8,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             prefWidth="800"
@@ -44,9 +45,8 @@
         </HBox>
     </top>
     <center>
-        <Canvas fx:id="canvas"/>
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" fitToHeight="true">
+            <Canvas fx:id="canvas"/>
+        </ScrollPane>
     </center>
-<!--    <bottom>-->
-<!--        <HBox styleClass="b-box" fx:id="bBox"></HBox>-->
-<!--    </bottom>-->
 </BorderPane>

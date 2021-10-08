@@ -8,6 +8,7 @@ import cn.navclub.xtm.app.util.UIUtil;
 import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.decode.RecordParser;
+import cn.navclub.xtm.kit.enums.MouseAction;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameRecorderProxy;
@@ -103,10 +104,10 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
 
     @Override
     public void stageShowChange(boolean oldValue, boolean newValue) {
-        if (newValue){
+        if (newValue) {
             var srnSize = UIUtil.getSrnSize();
-            this.getStage().setX(srnSize.getWidth()-this.box.getWidth());
-            this.getStage().setY(srnSize.getHeight()-this.box.getHeight()-10);
+            this.getStage().setX(srnSize.getWidth() - this.box.getWidth());
+            this.getStage().setY(srnSize.getHeight() - this.box.getHeight() - 10);
         }
     }
 
@@ -124,31 +125,15 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
 
     @Override
     public void onMessage(XTClient client, RecordParser.Record record) {
-        if (record.cmd() == SocketCMD.MOUSE_ACTIVE) {
-            var json = record.toJson();
+        if (record.cmd() != SocketCMD.MOUSE_ACTIVE) {
+            return;
+        }
+        var json = record.toJson();
+        var action = MouseAction.valueOf(json.getString(Constants.ACTION));
+        if (action == MouseAction.MOUSE_MOVE) {
             var x = json.getDouble(Constants.X);
             var y = json.getDouble(Constants.Y);
-            var w = json.getDouble(Constants.WIDTH);
-            var h = json.getDouble(Constants.HEIGHT);
-
-            this.updateMousePos(x, y, w, h);
+            Platform.runLater(() -> robot.mouseMove(new Point2D(x, y)));
         }
-    }
-
-    /**
-     * 根据比例计算出真实x和y位置
-     */
-    private void updateMousePos(double x, double y, double w, double h) {
-        var rect = Screen.getPrimary().getBounds();
-
-        var pw = w / rect.getWidth();
-        var ph = h / rect.getHeight();
-
-        var rx = x * pw;
-        var ry = y * ph;
-
-        System.out.println("rx=" + rx + ",ry=" + ry);
-
-        Platform.runLater(() -> robot.mouseMove(new Point2D(rx, ry)));
     }
 }

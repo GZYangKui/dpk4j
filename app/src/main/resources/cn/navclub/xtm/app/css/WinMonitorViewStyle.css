@@ -1,5 +1,6 @@
 .top-box {
     -fx-background-color: #121212;
+    -fx-pref-height: 1em;
 }
 
 .top-box .left-box {
