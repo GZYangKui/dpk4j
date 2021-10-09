@@ -147,9 +147,21 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
                 }
             });
         }
+        if (action == MouseAction.MOUSE_DRAGGED) {
+            var x = json.getDouble(Constants.X);
+            var y = json.getDouble(Constants.Y);
+            Platform.runLater(() -> {
+                //先按下
+                this.robot.mousePress(MouseButton.PRIMARY);
+                //再移动
+                this.robot.mouseMove(new Point2D(x, y));
+            });
+
+        }
     }
+
     @FXML
-    private void stop(){
+    private void stop() {
         this.triggerClose(false);
     }
 }

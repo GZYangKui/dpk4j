@@ -12,5 +12,9 @@ public enum MouseAction {
     /**
      * 鼠标释放
      */
-    MOUSE_RELEASED
+    MOUSE_RELEASED,
+    /**
+     * 鼠标拖拽
+     */
+    MOUSE_DRAGGED,
 }

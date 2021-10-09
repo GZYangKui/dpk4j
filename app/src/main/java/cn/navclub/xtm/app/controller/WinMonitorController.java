@@ -16,6 +16,8 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -132,48 +134,19 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
      * 捕获画布上的鼠标事件并转发至被控制终端
      */
     private void filterMouseEvent(MouseEvent event) {
-        Buffer buffer = null;
+        final JsonObject json;
         var eventType = event.getEventType();
-
         //处理鼠标移动
         if (eventType == MouseEvent.MOUSE_MOVED) {
-            var viewport = scrollPane.getViewportBounds();
-            var lh = this.width - viewport.getWidth();
-            var lv = this.height - viewport.getHeight();
-            if (lh < 0) {
-                lh = 0;
-            }
-            if (lv < 0) {
-                lv = 0;
-            }
-            //获取垂直滚动偏移量
-            var scrollV = this.scrollPane.getVvalue() * lv;
-            //获取水平滚动偏移量
-            var scrollH = this.scrollPane.getHvalue() * lh;
+            var point = this.calculate(event);
 
-            //如果目标显示器分比率小于默认窗体大小,计算VBox与canvas之间的间隔
-            var hs = (this.contentBox.getWidth() - this.canvas.getWidth()) / 2;
-            var vs = (this.contentBox.getHeight() - this.canvas.getHeight()) / 2;
-
-
-            var x = event.getSceneX() + scrollH - hs;
-            var y = event.getSceneY() + scrollV - this.topBox.getHeight()-vs;
-
-            var json = new JsonObject()
-                    .put(Constants.X, x)
-                    .put(Constants.Y, y)
+            json = new JsonObject()
+                    .put(Constants.X, point.getX())
+                    .put(Constants.Y, point.getY())
                     .put(Constants.ACTION, MouseAction.MOUSE_MOVE);
-
-            buffer = SocketDataEncode.restRequest(
-                    SocketCMD.MOUSE_ACTIVE,
-                    XTApp.getInstance().getRemoteCode(),
-                    json
-            );
-
         }
-
         //处理鼠标按下和释放操作
-        if (eventType == MouseEvent.MOUSE_PRESSED || eventType == MouseEvent.MOUSE_RELEASED) {
+        else if (eventType == MouseEvent.MOUSE_PRESSED || eventType == MouseEvent.MOUSE_RELEASED) {
             var clickBtn = event.getButton();
             final MouseAction action;
             if (eventType == MouseEvent.MOUSE_PRESSED) {
@@ -181,20 +154,58 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
             } else {
                 action = MouseAction.MOUSE_RELEASED;
             }
-            var json = new JsonObject()
+            json = new JsonObject()
                     .put(Constants.ACTION, action)
                     .put(Constants.MOUSE_BTN, clickBtn);
-
-            buffer = SocketDataEncode.restRequest(
-                    SocketCMD.MOUSE_ACTIVE,
-                    XTApp.getInstance().getRemoteCode(),
-                    json
-            );
+        }
+        //处理鼠标拖拽
+        else if (eventType == MouseEvent.MOUSE_DRAGGED) {
+            var point = calculate(event);
+            json = new JsonObject()
+                    .put(Constants.X, point.getX())
+                    .put(Constants.Y, point.getY())
+                    .put(Constants.ACTION,MouseAction.MOUSE_DRAGGED);
+        }
+        //不做处理
+        else {
+            json = null;
         }
 
-        if (buffer != null) {
-            MainViewController.newInstance().getXtClient().send(buffer);
+        if (json == null) {
+            return;
         }
+        var buffer = SocketDataEncode.restRequest(
+                SocketCMD.MOUSE_ACTIVE,
+                XTApp.getInstance().getRemoteCode(),
+                json
+        );
+        MainViewController.newInstance().getXtClient().send(buffer);
+    }
+
+    private Point2D calculate(MouseEvent event) {
+        var viewport = scrollPane.getViewportBounds();
+        var lh = this.width - viewport.getWidth();
+        var lv = this.height - viewport.getHeight();
+        if (lh < 0) {
+            lh = 0;
+        }
+        if (lv < 0) {
+            lv = 0;
+        }
+        //获取垂直滚动偏移量
+        var scrollV = this.scrollPane.getVvalue() * lv;
+        //获取水平滚动偏移量
+        var scrollH = this.scrollPane.getHvalue() * lh;
+
+        //如果目标显示器分比率小于默认窗体大小,计算VBox与canvas之间的间隔
+        var hs = (this.contentBox.getWidth() - this.canvas.getWidth()) / 2;
+        var vs = (this.contentBox.getHeight() - this.canvas.getHeight()) / 2;
+
+
+        var x = event.getSceneX() + scrollH - hs;
+        var y = event.getSceneY() + scrollV - this.topBox.getHeight() - vs;
+
+        return new Point2D(x, y);
     }
 
 
