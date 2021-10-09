@@ -6,10 +6,10 @@ import org.bytedeco.javacv.Frame;
 
 import java.util.Objects;
 
+import static org.bytedeco.ffmpeg.global.avcodec.AV_CODEC_ID_H264;
+
 /**
- *
  * {@link org.bytedeco.javacv.FFmpegFrameRecorder 代理类}
- *
  *
  * @author yangkui
  */
@@ -26,7 +26,7 @@ public final class FFmpegFrameRecorderProxy extends FFmpegProxy {
                 this.getImgWidth(),
                 this.getImgHeight()
         );
-
+        recorder.setVideoCodec(AV_CODEC_ID_H264);
         recorder.setFormat(this.getFormat());
         recorder.start();
     }
@@ -37,20 +37,18 @@ public final class FFmpegFrameRecorderProxy extends FFmpegProxy {
     }
 
     /**
-     *
      * 向目标地址推流
-     *
      */
-    public void push(Frame frame){
+    public void push(Frame frame) {
         try {
             this.recorder.record(frame);
         } catch (FFmpegFrameRecorder.Exception e) {
-            this.logger.error("推流失败",e);
+            this.logger.error("推流失败", e);
         }
     }
 
 
-    public static FFmpegFrameRecorderProxy createProxy(){
+    public static FFmpegFrameRecorderProxy createProxy() {
         return new FFmpegFrameRecorderProxy();
     }
 }

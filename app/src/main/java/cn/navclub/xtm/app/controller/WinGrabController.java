@@ -8,7 +8,8 @@ import cn.navclub.xtm.app.util.UIUtil;
 import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.decode.RecordParser;
-import cn.navclub.xtm.kit.enums.MouseAction;
+import cn.navclub.xtm.kit.enums.KeyEventAction;
+import cn.navclub.xtm.kit.enums.MouseEventAction;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameRecorderProxy;
@@ -16,6 +17,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -23,6 +25,7 @@ import javafx.scene.robot.Robot;
 import javafx.stage.Screen;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import org.bytedeco.ffmpeg.global.avcodec;
 import org.controlsfx.control.Notifications;
 
 public class WinGrabController extends AbstractWindowFXMLController<HBox> implements XTClientListener {
@@ -72,6 +75,7 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
         var future = this.fRecord
                 .setFilename(filename)
                 .setFormat("flv")
+                .setVideoCodec(avcodec.AV_CODEC_ID_H264)
                 .setImgWidth((int) rect.getWidth())
                 .setImgHeight((int) rect.getHeight())
                 .asyncStart()
@@ -126,28 +130,34 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
 
     @Override
     public void onMessage(XTClient client, RecordParser.Record record) {
-        if (record.cmd() != SocketCMD.MOUSE_ACTIVE) {
-            return;
+        if (record.cmd() == SocketCMD.MOUSE_ACTIVE) {
+            this.mouseEvent(record);
         }
+        if (record.cmd() == SocketCMD.KEY_ACTIVE) {
+            this.keyEvent(record);
+        }
+    }
+
+    private void mouseEvent(RecordParser.Record record) {
         var json = record.toJson();
-        var action = MouseAction.valueOf(json.getString(Constants.ACTION));
-        if (action == MouseAction.MOUSE_MOVE) {
+        var action = MouseEventAction.valueOf(json.getString(Constants.ACTION));
+        if (action == MouseEventAction.MOUSE_MOVE) {
             var x = json.getDouble(Constants.X);
             var y = json.getDouble(Constants.Y);
             Platform.runLater(() -> robot.mouseMove(new Point2D(x, y)));
         }
-        if (action == MouseAction.MOUSE_PRESSED || action == MouseAction.MOUSE_RELEASED) {
+        if (action == MouseEventAction.MOUSE_PRESSED || action == MouseEventAction.MOUSE_RELEASED) {
             var str = json.getString(Constants.MOUSE_BTN);
             var btn = MouseButton.valueOf(str);
             Platform.runLater(() -> {
-                if (action == MouseAction.MOUSE_PRESSED) {
+                if (action == MouseEventAction.MOUSE_PRESSED) {
                     robot.mousePress(btn);
                 } else {
                     robot.mouseRelease(btn);
                 }
             });
         }
-        if (action == MouseAction.MOUSE_DRAGGED) {
+        if (action == MouseEventAction.MOUSE_DRAGGED) {
             var x = json.getDouble(Constants.X);
             var y = json.getDouble(Constants.Y);
             Platform.runLater(() -> {
@@ -156,8 +166,22 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
                 //再移动
                 this.robot.mouseMove(new Point2D(x, y));
             });
-
         }
+    }
+
+    private void keyEvent(RecordParser.Record record) {
+        var json = record.toJson();
+        var keyCode = KeyCode.valueOf(json.getString(Constants.KEY_CODE));
+        var action = KeyEventAction.valueOf(json.getString(Constants.ACTION));
+        Platform.runLater(() -> {
+            if (action == KeyEventAction.KEY_PRESSED) {
+                this.robot.keyPress(keyCode);
+                System.out.println(keyCode + "被按下");
+            } else {
+                this.robot.keyRelease(keyCode);
+                System.out.println(keyCode + "被释放");
+            }
+        });
     }
 
     @FXML

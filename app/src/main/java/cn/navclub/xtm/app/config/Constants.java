@@ -7,6 +7,7 @@ public class Constants {
     public static final String WIDTH = "width";
     public static final String HEIGHT = "height";
     public static final String ACTION = "action";
+    public static final String KEY_CODE = "keyCode";
     public static final String PASSWORD = "password";
     public static final String MOUSE_BTN = "mouseBtn";
 }

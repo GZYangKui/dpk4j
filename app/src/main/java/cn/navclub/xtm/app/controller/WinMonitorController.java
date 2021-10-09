@@ -9,26 +9,25 @@ import cn.navclub.xtm.app.event.WinDragEvent;
 import cn.navclub.xtm.app.util.FFmpegUtil;
 import cn.navclub.xtm.app.util.UIUtil;
 import cn.navclub.xtm.kit.encode.SocketDataEncode;
-import cn.navclub.xtm.kit.enums.MouseAction;
+import cn.navclub.xtm.kit.enums.KeyEventAction;
+import cn.navclub.xtm.kit.enums.MouseEventAction;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.bytedeco.javacv.Frame;
@@ -80,6 +79,10 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
         this.canvas.setWidth(width);
         this.canvas.setHeight(height);
 
+
+        //过滤键盘数据事件
+        this.getStage().addEventFilter(KeyEvent.ANY, this::filterKeyEvent);
+        //过滤鼠标事件
         this.canvas.addEventFilter(MouseEvent.ANY, this::filterMouseEvent);
 
 
@@ -129,6 +132,28 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
         });
     }
 
+    private void filterKeyEvent(KeyEvent event) {
+        var type = event.getEventType();
+        if (type == KeyEvent.KEY_TYPED) {
+            return;
+        }
+        var keyCode = event.getCode();
+        final KeyEventAction action;
+        if (event.getEventType() == KeyEvent.KEY_PRESSED) {
+            action = KeyEventAction.KEY_PRESSED;
+        } else {
+            action = KeyEventAction.KEY_RELEASED;
+        }
+        var json = new JsonObject()
+                .put(Constants.ACTION, action)
+                .put(Constants.KEY_CODE, keyCode);
+        var buffer = SocketDataEncode.restRequest(
+                SocketCMD.KEY_ACTIVE,
+                XTApp.getInstance().getRemoteCode(),
+                json
+        );
+        MainViewController.newInstance().getXtClient().send(buffer);
+    }
 
     /**
      * 捕获画布上的鼠标事件并转发至被控制终端
@@ -143,16 +168,16 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
             json = new JsonObject()
                     .put(Constants.X, point.getX())
                     .put(Constants.Y, point.getY())
-                    .put(Constants.ACTION, MouseAction.MOUSE_MOVE);
+                    .put(Constants.ACTION, MouseEventAction.MOUSE_MOVE);
         }
         //处理鼠标按下和释放操作
         else if (eventType == MouseEvent.MOUSE_PRESSED || eventType == MouseEvent.MOUSE_RELEASED) {
             var clickBtn = event.getButton();
-            final MouseAction action;
+            final MouseEventAction action;
             if (eventType == MouseEvent.MOUSE_PRESSED) {
-                action = MouseAction.MOUSE_PRESSED;
+                action = MouseEventAction.MOUSE_PRESSED;
             } else {
-                action = MouseAction.MOUSE_RELEASED;
+                action = MouseEventAction.MOUSE_RELEASED;
             }
             json = new JsonObject()
                     .put(Constants.ACTION, action)
@@ -164,7 +189,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
             json = new JsonObject()
                     .put(Constants.X, point.getX())
                     .put(Constants.Y, point.getY())
-                    .put(Constants.ACTION,MouseAction.MOUSE_DRAGGED);
+                    .put(Constants.ACTION, MouseEventAction.MOUSE_DRAGGED);
         }
         //不做处理
         else {
@@ -182,6 +207,9 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
         MainViewController.newInstance().getXtClient().send(buffer);
     }
 
+    /**
+     * 将当前鼠标位置映射到被远程控制机器屏幕坐标上
+     */
     private Point2D calculate(MouseEvent event) {
         var viewport = scrollPane.getViewportBounds();
         var lh = this.width - viewport.getWidth();

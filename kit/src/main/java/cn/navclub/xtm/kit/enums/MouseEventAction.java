@@ -1,6 +1,6 @@
 package cn.navclub.xtm.kit.enums;
 
-public enum MouseAction {
+public enum MouseEventAction {
     /**
      * 鼠标移动
      */

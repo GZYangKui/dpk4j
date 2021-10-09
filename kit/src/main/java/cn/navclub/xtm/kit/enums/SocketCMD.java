@@ -8,7 +8,8 @@ public enum SocketCMD {
     HEART_BEAT((byte) 0, "客户端心跳"),
     UPDATE_CLIENT_CODE((byte) 1, "更新客户端识别码"),
     REQUEST_REMOTE((byte) 2, "请求远程控制"),
-    MOUSE_ACTIVE((byte) 3, "鼠标动作");
+    MOUSE_ACTIVE((byte) 3, "鼠标动作"),
+    KEY_ACTIVE((byte) 4, "键盘动作");
 
     private final byte cmd;
     private final String message;

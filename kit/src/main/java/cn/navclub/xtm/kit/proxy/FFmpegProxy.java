@@ -2,6 +2,7 @@ package cn.navclub.xtm.kit.proxy;
 
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameRecorderProxy;
+import org.bytedeco.ffmpeg.global.avcodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +22,14 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
     private int imgHeight;
     private String format;
     private String filename;
+    /**
+     * 视屏编码方式,详情看{@link org.bytedeco.ffmpeg.global.avcodec}
+     */
+    private int videoCodec;
 
 
     public FFmpegProxy() {
+        this.videoCodec = avcodec.AV_CODEC_ID_H263;
         this.logger = LoggerFactory.getLogger(this.getClass());
     }
 
@@ -97,6 +103,14 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
         return this;
     }
 
+    public FFmpegProxy setVideoCodec(int videoCodec) {
+        this.videoCodec = videoCodec;
+        return this;
+    }
+
+    public int getVideoCodec() {
+        return videoCodec;
+    }
 
     public static FFmpegProxy createRdProxy() {
         return new FFmpegFrameRecorderProxy();

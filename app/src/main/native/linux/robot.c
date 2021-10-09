@@ -15,7 +15,7 @@ extern void mouse_drag(double x, double y) {
         fprintf(stderr, "Error:can't create display instance!");
         exit(EXIT_FAILURE);
     }
-    
+
 //    XSetInputFocus(display,None,RectangleIn,CurrentTime);
 //    XWarpPointer(display,None,None,0,0,0,0,x,y);
     XCloseDisplay(display);
