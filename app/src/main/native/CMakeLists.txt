@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
-project(native C)
+project(xtm-native C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_library(native main.c)
-add_executable(main main.c robot/robot.c robot/robot.h)
+add_subdirectory(linux)
+
+aux_source_directory(. SRC_DIR)
+aux_source_directory(include INCLUDE_DIR)
+
+add_executable(xtm ${SRC_DIR} ${INCLUDE_DIR})
+
+target_link_libraries(xtm ltm)
