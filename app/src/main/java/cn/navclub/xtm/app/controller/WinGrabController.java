@@ -28,6 +28,8 @@ import javafx.stage.WindowEvent;
 import org.bytedeco.ffmpeg.global.avcodec;
 import org.controlsfx.control.Notifications;
 
+import java.util.List;
+
 public class WinGrabController extends AbstractWindowFXMLController<HBox> implements XTClientListener {
 
     private final Robot robot;
@@ -102,6 +104,7 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
     @Override
     public void onRequestClose(WindowEvent event) {
         super.onRequestClose(event);
+        MainViewController.newInstance().getXtClient().removeListener(this);
         this.fRecord.stop();
         this.fProxy.stop();
         MainViewController.newInstance().openWindow();
@@ -136,6 +139,16 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
         if (record.cmd() == SocketCMD.KEY_ACTIVE) {
             this.keyEvent(record);
         }
+    }
+
+    private static final List<SocketCMD> ACTIONS = List.of(
+            SocketCMD.MOUSE_ACTIVE,
+            SocketCMD.KEY_ACTIVE
+    );
+
+    @Override
+    public List<SocketCMD> actions() {
+        return ACTIONS;
     }
 
     private void mouseEvent(RecordParser.Record record) {

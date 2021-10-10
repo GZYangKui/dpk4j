@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -90,13 +91,24 @@ public class XTClient {
                 this.hbTimers.getAndAdd(-1);
                 return;
             }
-            LOG.info("Receive TCP Package [Direction:{},Cmd:{},Source Address:{},Data Length:{} byte]", record.direction(), record.cmd(), record.sourceAddr(), record.length());
+            LOG.debug("Receive TCP Package [Direction:{},Cmd:{},Source Address:{},Data Length:{} byte]", record.direction(), record.cmd(), record.sourceAddr(), record.length());
             //投递消息
             for (XTClientListener listener : this.listeners) {
+                //判断监听器是否监听该socket命令
+                if (!listener.actions().contains(record.cmd())) {
+                    continue;
+                }
+                Throwable ex = null;
                 try {
+                    LOG.debug("Delivery message to {} listener", listener.getClass().getSimpleName());
                     listener.onMessage(this, record);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    ex = e;
+                }
+                if (ex != null) {
+                    LOG.debug("Delivery message failed cause:{}", ex.getMessage());
+                } else {
+                    LOG.debug("Success delivery message to {} listener.", listener.getClass().getSimpleName());
                 }
             }
         });
@@ -139,7 +151,16 @@ public class XTClient {
         this.socket = null;
     }
 
+    public synchronized void removeListener(XTClientListener listener) {
+        Objects.requireNonNull(listener);
+        if (!this.listeners.contains(listener)) {
+            return;
+        }
+        this.listeners.remove(listener);
+    }
+
     public synchronized void addListener(XTClientListener listener) {
+        Objects.requireNonNull(listener);
         if (this.listeners.contains(listener)) {
             return;
         }

@@ -26,9 +26,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.Notifications;
-import org.slf4j.helpers.Util;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 /**
  * 远程连接配置界面
@@ -169,5 +169,15 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
                 new JsonObject().put(Constants.PASSWORD, pw)
         );
         MainViewController.newInstance().getXtClient().send(buf);
+    }
+
+    private static final List<SocketCMD> ACTIONS = List.of(
+            SocketCMD.UPDATE_CLIENT_CODE,
+            SocketCMD.REQUEST_REMOTE
+    );
+
+    @Override
+    public List<SocketCMD> actions() {
+        return ACTIONS;
     }
 }
