@@ -15,6 +15,8 @@ import java.util.concurrent.CompletableFuture;
  * @author yangkui
  */
 public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpegFrameGrabberProxy {
+    private static final int DEFAULT_FRAME_NUMBER = 30;
+
     protected final Logger logger;
 
 
@@ -26,9 +28,11 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
      * 视屏编码方式,详情看{@link org.bytedeco.ffmpeg.global.avcodec}
      */
     private int videoCodec;
+    private int frameNumber;
 
 
     public FFmpegProxy() {
+        this.frameNumber = DEFAULT_FRAME_NUMBER;
         this.videoCodec = avcodec.AV_CODEC_ID_H263;
         this.logger = LoggerFactory.getLogger(this.getClass());
     }
@@ -95,6 +99,11 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
         return this;
     }
 
+    public FFmpegProxy setFrameNumber(int frameNumber) {
+        this.frameNumber = frameNumber;
+        return this;
+    }
+
     /**
      * 设置FFmpeg#ImageHeight属性
      */
@@ -130,5 +139,9 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
 
     public String getFilename() {
         return filename;
+    }
+
+    public int getFrameNumber() {
+        return frameNumber;
     }
 }

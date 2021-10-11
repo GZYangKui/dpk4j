@@ -52,10 +52,13 @@
         </HBox>
     </top>
     <center>
-        <ScrollPane fx:id="scrollPane" styleClass="scroll-pane" fitToWidth="true" fitToHeight="true">
-            <VBox alignment="center" fx:id="contentBox" styleClass="content-box">
-                <Canvas fx:id="canvas"/>
-            </VBox>
-        </ScrollPane>
+        <StackPane>
+            <ScrollPane fx:id="scrollPane" styleClass="scroll-pane" fitToWidth="true" fitToHeight="true">
+                <VBox alignment="center" fx:id="contentBox" styleClass="content-box">
+                    <Canvas fx:id="canvas"/>
+                </VBox>
+            </ScrollPane>
+            <Label text="正在进入远程桌面中...." styleClass="prompt-text" fx:id="promptText"/>
+        </StackPane>
     </center>
 </BorderPane>

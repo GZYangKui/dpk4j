@@ -28,6 +28,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.FontSmoothingType;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.bytedeco.javacv.Frame;
@@ -39,6 +41,7 @@ import org.controlsfx.control.Notifications;
  * @author yangkui
  */
 public class WinMonitorController extends AbstractWindowFXMLController<BorderPane> {
+
     @FXML
     private Button wsBtn;
     @FXML
@@ -50,6 +53,8 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     @FXML
     private Label robotInfo;
     @FXML
+    private Label promptText;
+    @FXML
     private ScrollPane scrollPane;
 
 
@@ -57,7 +62,10 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
      * 判断当前窗口是否最大化
      */
     private boolean maxWin;
-
+    /**
+     * 判断远程连接是否成功建立
+     */
+    private boolean connected;
 
     private final double width;
     private final double height;
@@ -76,8 +84,8 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
 
         WinDragEvent.register(getStage(), this.topBox);
 
-        this.canvas.setWidth(width);
-        this.canvas.setHeight(height);
+//        this.canvas.setWidth(width);
+//        this.canvas.setHeight(height);
 
 
         //过滤键盘数据事件
@@ -133,6 +141,9 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     }
 
     private void filterKeyEvent(KeyEvent event) {
+        if (!this.connected) {
+            return;
+        }
         var type = event.getEventType();
         if (type == KeyEvent.KEY_TYPED) {
             return;
@@ -159,6 +170,9 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
      * 捕获画布上的鼠标事件并转发至被控制终端
      */
     private void filterMouseEvent(MouseEvent event) {
+        if (!this.connected) {
+            return;
+        }
         final JsonObject json;
         var eventType = event.getEventType();
         //处理鼠标移动
@@ -243,6 +257,13 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     private void onReceive(Frame frame) {
         var wi = FFmpegUtil.toFXImage(frame);
         Platform.runLater(() -> {
+            //初始化画布高度和宽度
+            if (!this.connected) {
+                this.connected = true;
+                this.canvas.setWidth(this.width);
+                this.canvas.setHeight(this.height);
+                this.promptText.setVisible(false);
+            }
             var width = this.canvas.getWidth();
             var height = this.canvas.getHeight();
             var context = this.canvas.getGraphicsContext2D();

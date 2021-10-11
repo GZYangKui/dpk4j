@@ -35,6 +35,27 @@
     -fx-background-color: transparent;
 }
 
+.scroll-pane .scroll-bar .thumb {
+    -fx-background-radius: 0;
+    -fx-border-radius: 01;
+    -fx-background-color: #545458;
+}
+
+
+.scroll-pane .scroll-bar .decrement-button .decrement-arrow,
+.scroll-pane .scroll-bar .increment-button .increment-arrow {
+    visibility: false;
+}
+
+.scroll-pane .scroll-bar .trace-background {
+    -fx-background-color: red;
+}
+
 .content-box {
     -fx-background-color: #000000;
+}
+
+.prompt-text {
+    -fx-font-size: 1.5em;
+    -fx-text-fill: #fff;
 }

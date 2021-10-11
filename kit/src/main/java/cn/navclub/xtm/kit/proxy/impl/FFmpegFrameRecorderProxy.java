@@ -26,8 +26,9 @@ public final class FFmpegFrameRecorderProxy extends FFmpegProxy {
                 this.getImgWidth(),
                 this.getImgHeight()
         );
-        recorder.setVideoCodec(AV_CODEC_ID_H264);
         recorder.setFormat(this.getFormat());
+        recorder.setVideoCodec(AV_CODEC_ID_H264);
+        recorder.setFrameNumber(this.getFrameNumber());
         recorder.start();
     }
 

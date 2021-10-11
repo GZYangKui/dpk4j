@@ -251,21 +251,20 @@
         <!--此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息-->
 
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-
-            <level>debug</level>
-
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
         </filter>
 
     </appender>
 
 
-    <logger name="org.bytedeco.javacpp" level="DEBUG"/>
     <logger level="DEBUG" name="com.croot.ta"/>
-    <logger level="WARN" name="ch.qos.logback"/>
+    <logger level="ERROR" name="ch.qos.logback"/>
+    <logger level="WARN" name="io.netty"/>
 
     <!-- 生产环境下，将此级别配置为适合的级别，以免日志文件太多或影响程序性能 -->
 
-    <root level="INFO">
+    <root level="DEBUG">
 
         <appender-ref ref="FILEERROR"/>
 

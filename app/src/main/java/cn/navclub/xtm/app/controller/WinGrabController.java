@@ -77,6 +77,7 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
         var future = this.fRecord
                 .setFilename(filename)
                 .setFormat("flv")
+                .setFrameNumber(50)
                 .setVideoCodec(avcodec.AV_CODEC_ID_H264)
                 .setImgWidth((int) rect.getWidth())
                 .setImgHeight((int) rect.getHeight())
@@ -84,6 +85,7 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
                 .thenAccept(it ->
                         this.fProxy
                                 .setCallback(this.fRecord::push)
+                                .setFrameNumber(50)
                                 .setFilename(String.format(":%d+%d", screenID, 0))
                                 .setImgWidth((int) rect.getWidth())
                                 .setImgHeight((int) rect.getHeight())
