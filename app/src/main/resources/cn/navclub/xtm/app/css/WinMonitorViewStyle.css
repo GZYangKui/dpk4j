@@ -59,3 +59,35 @@
     -fx-font-size: 1.5em;
     -fx-text-fill: #fff;
 }
+
+.tool-box {
+    -fx-background-color: #1F1F1F;
+}
+
+.tool-box *{
+    -fx-text-fill: #fff;
+}
+
+.tool-box .left-box{
+    -fx-padding: .3em;
+    -fx-spacing: 1em;
+    -fx-alignment: CENTER-LEFT;
+}
+
+.tool-box .left-box .button{
+    -fx-background-color: transparent;
+}
+
+.tool-box .left-box .button:hover{
+ -fx-background-color: #3c3c3c;
+}
+
+.tool-box .center-box{
+    -fx-alignment: BOTTOM_CENTER;
+}
+
+.tool-box .center-box .button{
+    -fx-background-color: #3c3c3c;
+    -fx-background-radius: 0;
+    -fx-padding: 0 1em;
+}
