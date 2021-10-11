@@ -43,7 +43,7 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
     @FXML
     private Label remoteUser;
 
-    public WinGrabController(final Integer robotId) {
+    public WinGrabController() {
         super("WinGrabView.fxml");
         this.robot = new Robot();
         this.getStage().setAlwaysOnTop(true);
@@ -59,19 +59,20 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
         this.fRecord = FFmpegFrameRecorderProxy.createProxy();
         this.fProxy = FFmpegFrameGrabberProxy.createGraProxy();
 
-        this.asyncInit(robotId);
+        this.asyncInit();
     }
 
     /**
      * 执行异步初始化
      */
-    private void asyncInit(final int robotId) {
+    private void asyncInit() {
+        var app = XTApp.getInstance();
         var screenID = getScreenID();
         var rect = Screen.getPrimary().getBounds();
         var filename = String.format(
-                "rtmp://%s/myapp?robot=%d",
-                XTApp.getInstance().getHost(),
-                robotId
+                "rtmp://%s/myapp/%d",
+                app.getHost(),
+                app.getRobotCode()
         );
         //执行异步初始化FFMpeg模块
         var future = this.fRecord
@@ -191,10 +192,8 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
         Platform.runLater(() -> {
             if (action == KeyEventAction.KEY_PRESSED) {
                 this.robot.keyPress(keyCode);
-                System.out.println(keyCode + "被按下");
             } else {
                 this.robot.keyRelease(keyCode);
-                System.out.println(keyCode + "被释放");
             }
         });
     }

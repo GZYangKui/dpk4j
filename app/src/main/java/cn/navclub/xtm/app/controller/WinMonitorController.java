@@ -84,9 +84,6 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
 
         WinDragEvent.register(getStage(), this.topBox);
 
-//        this.canvas.setWidth(width);
-//        this.canvas.setHeight(height);
-
 
         //过滤键盘数据事件
         this.getStage().addEventFilter(KeyEvent.ANY, this::filterKeyEvent);
@@ -116,7 +113,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     private void asyncInit(int robotId, double width, double height) {
 
         var filename = String.format(
-                "rtmp://%s/myapp?robotId=%d",
+                "rtmp://%s/myapp/%d",
                 XTApp.getInstance().getHost(),
                 robotId
         );
@@ -207,12 +204,9 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
         }
         //不做处理
         else {
-            json = null;
-        }
-
-        if (json == null) {
             return;
         }
+
         var buffer = SocketDataEncode.restRequest(
                 SocketCMD.MOUSE_ACTIVE,
                 XTApp.getInstance().getRemoteCode(),
