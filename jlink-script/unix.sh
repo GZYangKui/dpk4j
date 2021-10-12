@@ -12,6 +12,7 @@ fi
 J_LINK_MODULES="\
 org.slf4j,\
 java.naming,\
+javafx.swing,\
 javafx.controls,\
 com.dlsc.formsfx,\
 org.bytedeco.javacv,\

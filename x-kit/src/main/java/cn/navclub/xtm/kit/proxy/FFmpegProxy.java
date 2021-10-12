@@ -29,6 +29,7 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
      */
     private int videoCodec;
     private int frameNumber;
+    private double frameRate = 0;
 
 
     public FFmpegProxy() {
@@ -104,6 +105,11 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
         return this;
     }
 
+    public FFmpegProxy setFrameRate(double frameRate){
+        this.frameRate = frameRate;
+        return this;
+    }
+
     /**
      * 设置FFmpeg#ImageHeight属性
      */
@@ -143,5 +149,9 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
 
     public int getFrameNumber() {
         return frameNumber;
+    }
+
+    public double getFrameRate() {
+        return frameRate;
     }
 }

@@ -35,7 +35,7 @@ public final class FFmpegFrameGrabberProxy extends FFmpegProxy {
         this.grabber.setImageWidth(this.getImgWidth());
         this.grabber.setImageHeight(this.getImgHeight());
 
-
+        this.grabber.setFrameRate(this.getFrameRate());
         this.grabber.setFrameNumber(this.getFrameNumber());
         this.grabber.start(true);
 

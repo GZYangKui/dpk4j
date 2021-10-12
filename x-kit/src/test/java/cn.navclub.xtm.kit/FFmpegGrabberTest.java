@@ -25,6 +25,7 @@ public class FFmpegGrabberTest {
                 .setImgWidth(1920)
                 .setImgHeight(1080)
                 .setFormat("x11grab")
+                .setFrameRate(60)
                 .start();
 
     }

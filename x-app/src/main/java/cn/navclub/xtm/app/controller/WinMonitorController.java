@@ -150,6 +150,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
                 .setFilename(filename)
                 .setImgWidth((int) width)
                 .setImgHeight((int) height)
+                .setFrameRate(60)
                 .setFormat("flv")
                 .asyncStart();
 

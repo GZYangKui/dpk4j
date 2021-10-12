@@ -81,12 +81,14 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
                 .setFrameNumber(50)
                 .setVideoCodec(avcodec.AV_CODEC_ID_H264)
                 .setImgWidth((int) rect.getWidth())
+                .setFrameRate(60)
                 .setImgHeight((int) rect.getHeight())
                 .asyncStart()
                 .thenAccept(it ->
                         this.fProxy
                                 .setCallback(this.fRecord::push)
                                 .setFrameNumber(50)
+                                .setFrameRate(60)
                                 .setFilename(String.format(":%d+%d", screenID, 0))
                                 .setImgWidth((int) rect.getWidth())
                                 .setImgHeight((int) rect.getHeight())
