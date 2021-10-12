@@ -59,7 +59,7 @@
                     <Canvas fx:id="canvas"/>
                 </VBox>
             </ScrollPane>
-            <MonitorToolBox/>
+            <MonitorToolBox fx:id="toolBox"/>
             <Label text="正在进入远程桌面中...." styleClass="prompt-text" fx:id="promptText"/>
         </StackPane>
     </center>

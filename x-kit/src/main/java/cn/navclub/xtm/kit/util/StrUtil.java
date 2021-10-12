@@ -1,6 +1,7 @@
 package cn.navclub.xtm.kit.util;
 
 import java.util.Locale;
+import java.util.UUID;
 
 public class StrUtil {
     private static final char[] SEED = new char[]{
@@ -41,9 +42,7 @@ public class StrUtil {
     };
 
     /**
-     *
      * 生成指定长度字符串
-     *
      */
     public static String rdStr(int len, boolean lower) {
         var sl = SEED.length;
@@ -61,11 +60,24 @@ public class StrUtil {
         return str;
     }
 
-    public static boolean isEmpty(String str){
-        return str==null || str.trim().equals("");
+    /**
+     *
+     * 生成指定后缀名文件名
+     *
+     */
+    public static String uidFName(String format, boolean replace) {
+        var uuid = UUID.randomUUID().toString();
+        if (replace) {
+            uuid = uuid.replace("-", "");
+        }
+        return String.format("%s.%s", uuid, format);
     }
 
-    public static boolean isNotEmpty(String str){
+    public static boolean isEmpty(String str) {
+        return str == null || str.trim().equals("");
+    }
+
+    public static boolean isNotEmpty(String str) {
         return !isEmpty(str);
     }
 }

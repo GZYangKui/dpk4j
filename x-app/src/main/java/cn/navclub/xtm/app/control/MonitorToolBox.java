@@ -1,6 +1,8 @@
 package cn.navclub.xtm.app.control;
 
 import cn.navclub.xtm.app.AssetsHelper;
+import cn.navclub.xtm.app.controller.WinMonitorController;
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -14,6 +16,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class MonitorToolBox extends BorderPane {
     private static final String DEFAULT_STYLE_CLASS = "tool-box";
@@ -29,6 +32,10 @@ public class MonitorToolBox extends BorderPane {
     private final Button switcher;
 
     private final List<Button> buttons;
+
+    private Consumer<ToolBoxItem> callback = (item) -> {
+
+    };
 
     public MonitorToolBox() {
 
@@ -48,6 +55,7 @@ public class MonitorToolBox extends BorderPane {
             btn.setGraphic(new ImageView(image));
             this.buttons.add(btn);
             this.leftBox.getChildren().add(btn);
+            btn.setOnAction(event -> this.callback.accept(value));
         }
         this.cBox.getChildren().add(this.switcher);
         this.setMaxHeight(this.prefHeight);
@@ -83,7 +91,11 @@ public class MonitorToolBox extends BorderPane {
         this.switcher.setGraphic(new ImageView(image));
     }
 
-    private enum ToolBoxItem {
+    public void setCallback(Consumer<ToolBoxItem> callback) {
+        this.callback = callback;
+    }
+
+    public enum ToolBoxItem {
         CHAT("chat.png", "聊天"),
         RECORD("record.png", "录像"),
         SNAP("snap.png", "截幕");

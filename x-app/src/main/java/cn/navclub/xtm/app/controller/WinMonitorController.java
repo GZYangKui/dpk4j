@@ -5,6 +5,7 @@ import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 
 import cn.navclub.xtm.app.config.Constants;
 import cn.navclub.xtm.app.config.XTApp;
+import cn.navclub.xtm.app.control.MonitorToolBox;
 import cn.navclub.xtm.app.event.WinDragEvent;
 import cn.navclub.xtm.app.util.FFmpegUtil;
 import cn.navclub.xtm.app.util.UIUtil;
@@ -13,10 +14,12 @@ import cn.navclub.xtm.kit.enums.KeyEventAction;
 import cn.navclub.xtm.kit.enums.MouseEventAction;
 import cn.navclub.xtm.kit.enums.SocketCMD;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
+import cn.navclub.xtm.kit.util.StrUtil;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -56,6 +59,8 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
     private Label promptText;
     @FXML
     private ScrollPane scrollPane;
+    @FXML
+    private MonitorToolBox toolBox;
 
 
     /**
@@ -81,6 +86,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
         this.height = height;
 
         this.robotInfo.setText("远程控制 " + robotId);
+        this.toolBox.setCallback(this::toolBoxAction);
 
         WinDragEvent.register(getStage(), this.topBox);
 
@@ -104,6 +110,27 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
         this.fProxy = FFmpegFrameGrabberProxy.createGraProxy();
         this.asyncInit(robotId, width, height);
 
+    }
+
+    /**
+     * 处理{@link MonitorToolBox}传递出来事件
+     */
+    private void toolBoxAction(MonitorToolBox.ToolBoxItem item) {
+        if (item == MonitorToolBox.ToolBoxItem.SNAP) {
+            UIUtil.snapNode(this.canvas, StrUtil.uidFName("png", true)).whenComplete((optional, t) -> {
+                if (optional == null) {
+                    return;
+                }
+                Platform.runLater(() -> {
+                    var nf = Notifications.create().position(Pos.TOP_RIGHT);
+                    if (optional.isEmpty()) {
+                        nf.text("保存失,请重试!").showError();
+                    } else {
+                        nf.text("保存成功:" + optional.get()).showInformation();
+                    }
+                });
+            });
+        }
     }
 
 
