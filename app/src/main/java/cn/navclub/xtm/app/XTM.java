@@ -2,7 +2,6 @@ package cn.navclub.xtm.app;
 
 import cn.navclub.xtm.app.config.XTApp;
 import cn.navclub.xtm.app.controller.MainViewController;
-import cn.navclub.xtm.app.controller.WinMonitorController;
 import javafx.application.Application;
 
 import javafx.stage.Stage;
@@ -22,10 +21,9 @@ public class XTM extends Application {
     @Override
     public void start(Stage primaryStage) {
         XTApp.getInstance()
-                .setHost("192.168.0.104")
+                .setHost("192.168.3.112")
                 .setPort(8888);
         MainViewController.newInstance().openWindow();
-//        new WinMonitorController(111,1850,960).openWindow();
     }
 
 }
