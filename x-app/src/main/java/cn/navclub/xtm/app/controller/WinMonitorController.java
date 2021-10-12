@@ -281,9 +281,10 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
             //初始化画布高度和宽度
             if (!this.connected) {
                 this.connected = true;
+                this.toolBox.setVisible(true);
+                this.promptText.setVisible(false);
                 this.canvas.setWidth(this.width);
                 this.canvas.setHeight(this.height);
-                this.promptText.setVisible(false);
             }
             var width = this.canvas.getWidth();
             var height = this.canvas.getHeight();
