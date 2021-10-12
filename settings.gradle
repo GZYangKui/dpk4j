@@ -1,4 +1,3 @@
 rootProject.name = "x-terminal"
-include 'app'
-include 'kit'
-
+include 'x-app'
+include 'x-kit'
