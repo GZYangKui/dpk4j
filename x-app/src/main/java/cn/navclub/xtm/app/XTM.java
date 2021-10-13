@@ -21,7 +21,7 @@ public class XTM extends Application {
     @Override
     public void start(Stage primaryStage) {
         XTApp.getInstance()
-                .setHost("192.168.0.104")
+                .setHost("127.0.0.1")
                 .setPort(8888);
         MainViewController.newInstance().openWindow();
     }

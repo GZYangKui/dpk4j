@@ -89,6 +89,7 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
                                 .setCallback(this.fRecord::push)
                                 .setFrameNumber(50)
                                 .setFrameRate(60)
+                                .addOption("draw_mouse", "0")
                                 .setFilename(String.format(":%d+%d", screenID, 0))
                                 .setImgWidth((int) rect.getWidth())
                                 .setImgHeight((int) rect.getHeight())

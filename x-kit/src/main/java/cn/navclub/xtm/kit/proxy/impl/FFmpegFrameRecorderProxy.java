@@ -4,6 +4,7 @@ import cn.navclub.xtm.kit.proxy.FFmpegProxy;
 import org.bytedeco.javacv.FFmpegFrameRecorder;
 import org.bytedeco.javacv.Frame;
 
+import java.util.Map;
 import java.util.Objects;
 
 import static org.bytedeco.ffmpeg.global.avcodec.AV_CODEC_ID_H264;
@@ -30,6 +31,11 @@ public final class FFmpegFrameRecorderProxy extends FFmpegProxy {
         recorder.setVideoCodec(AV_CODEC_ID_H264);
         recorder.setFrameRate(this.getFrameRate());
         recorder.setFrameNumber(this.getFrameNumber());
+
+        for (Map.Entry<String, String> entry : this.getOptions().entrySet()) {
+            this.recorder.setOption(entry.getKey(), entry.getValue());
+        }
+
         recorder.start();
     }
 

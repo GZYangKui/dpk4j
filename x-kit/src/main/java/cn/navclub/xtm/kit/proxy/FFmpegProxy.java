@@ -6,6 +6,8 @@ import org.bytedeco.ffmpeg.global.avcodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -31,8 +33,11 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
     private int frameNumber;
     private double frameRate = 0;
 
+    private final Map<String, String> options;
+
 
     public FFmpegProxy() {
+        this.options = new HashMap<>();
         this.frameNumber = DEFAULT_FRAME_NUMBER;
         this.videoCodec = avcodec.AV_CODEC_ID_H263;
         this.logger = LoggerFactory.getLogger(this.getClass());
@@ -105,8 +110,13 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
         return this;
     }
 
-    public FFmpegProxy setFrameRate(double frameRate){
+    public FFmpegProxy setFrameRate(double frameRate) {
         this.frameRate = frameRate;
+        return this;
+    }
+
+    public FFmpegProxy addOption(String key, String value) {
+        this.options.put(key, value);
         return this;
     }
 
@@ -149,6 +159,10 @@ public sealed abstract class FFmpegProxy permits FFmpegFrameRecorderProxy, FFmpe
 
     public int getFrameNumber() {
         return frameNumber;
+    }
+
+    public Map<String, String> getOptions() {
+        return options;
     }
 
     public double getFrameRate() {

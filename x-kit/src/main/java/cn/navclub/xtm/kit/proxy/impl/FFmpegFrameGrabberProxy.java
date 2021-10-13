@@ -5,6 +5,7 @@ import cn.navclub.xtm.kit.proxy.FFmpegProxy;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -32,11 +33,16 @@ public final class FFmpegFrameGrabberProxy extends FFmpegProxy {
 
         this.grabber = new FFmpegFrameGrabber(this.getFilename());
         this.grabber.setFormat(this.getFormat());
+        this.grabber.setOption("draw_mouse", "0");
         this.grabber.setImageWidth(this.getImgWidth());
         this.grabber.setImageHeight(this.getImgHeight());
-
         this.grabber.setFrameRate(this.getFrameRate());
         this.grabber.setFrameNumber(this.getFrameNumber());
+
+        for (Map.Entry<String, String> entry : this.getOptions().entrySet()) {
+            this.grabber.setOption(entry.getKey(), entry.getValue());
+        }
+
         this.grabber.start(true);
 
         this.proxyThread.start();
@@ -83,7 +89,7 @@ public final class FFmpegFrameGrabberProxy extends FFmpegProxy {
             super.start();
         }
 
-        public void stopGra(){
+        public void stopGra() {
             this.running = false;
         }
 
