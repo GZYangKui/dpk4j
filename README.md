@@ -1,4 +1,4 @@
-# 朝天辣
+# dkp4j
 
 ## 前言
 
@@ -49,14 +49,16 @@
      */
     RESPONSE((byte) 1);
 ```
+
 更多方向请看:[TCPDirection](./kit/src/main/java/cn/navclub/xtm/kit/enums/TCPDirection.java)
 
 ### 组织结构
 
 ```lua
-x-termianl
-├── app -- 用户界面交互相关代码
-└── kit -- 与服务器交互相关代码
+dpk4j
+├── x-server -- 服务端相关代码
+├── x-app -- 用户界面交互相关代码
+└── x-kit -- 与服务器交互相关代码
 ```
 
 ### 程序快照
