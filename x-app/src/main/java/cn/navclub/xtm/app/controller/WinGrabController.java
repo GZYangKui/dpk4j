@@ -7,10 +7,11 @@ import cn.navclub.xtm.app.event.WinDragEvent;
 import cn.navclub.xtm.app.util.UIUtil;
 import cn.navclub.xtm.core.decode.RecordParser;
 import cn.navclub.xtm.core.enums.SocketCMD;
+import cn.navclub.xtm.kit.XLHelper;
 import cn.navclub.xtm.kit.client.XTClient;
-import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.enums.KeyEventAction;
 import cn.navclub.xtm.kit.enums.MouseEventAction;
+import cn.navclub.xtm.kit.listener.XTClientListener;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameRecorderProxy;
 import javafx.application.Platform;
@@ -53,8 +54,7 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
         WinDragEvent.register(getStage(), this.box);
         this.remoteUser.setText(XTApp.getInstance().getRobotCode().toString());
 
-
-        MainViewController.newInstance().getXtClient().addListener(this);
+        XLHelper.addListener(this);
 
         this.fRecord = FFmpegFrameRecorderProxy.createProxy();
         this.fProxy = FFmpegFrameGrabberProxy.createGraProxy();
@@ -110,7 +110,7 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
     @Override
     public void onRequestClose(WindowEvent event) {
         super.onRequestClose(event);
-        MainViewController.newInstance().getXtClient().removeListener(this);
+        XLHelper.removeListener(this);
         this.fRecord.stop();
         this.fProxy.stop();
         MainViewController.newInstance().openWindow();

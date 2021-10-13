@@ -1,8 +1,10 @@
-package cn.navclub.xtm.kit.client;
+package cn.navclub.xtm.kit.listener;
 
 
 import cn.navclub.xtm.core.decode.RecordParser;
 import cn.navclub.xtm.core.enums.SocketCMD;
+import cn.navclub.xtm.kit.client.XTClient;
+import cn.navclub.xtm.kit.enums.XTClientStatus;
 
 import java.util.List;
 
@@ -31,6 +33,24 @@ public interface XTClientListener {
      */
     default List<SocketCMD> actions() {
         return EMPTY_ACTIONS;
+    }
+
+    /**
+     *
+     * 是否监听{@link XTClient}状态变化
+     *
+     */
+    default boolean lStatus(){
+        return false;
+    }
+
+    /**
+     *
+     * 获取当前listener名称,默认返回当前类名称
+     *
+     */
+    default String getName(){
+        return this.getClass().getSimpleName();
     }
 
 }

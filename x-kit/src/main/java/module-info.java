@@ -18,9 +18,10 @@ module cn.navclub.xtm.kit {
     requires transitive org.bytedeco.opencv.linux.x86_64;
     requires transitive org.bytedeco.openblas.linux.x86_64;
 
-
+    exports cn.navclub.xtm.kit;
     exports cn.navclub.xtm.kit.proxy;
     exports cn.navclub.xtm.kit.client;
     exports cn.navclub.xtm.kit.enums;
+    exports cn.navclub.xtm.kit.listener;
     exports cn.navclub.xtm.kit.proxy.impl;
 }

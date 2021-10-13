@@ -8,11 +8,12 @@ import cn.navclub.xtm.app.control.NavListItem;
 import cn.navclub.xtm.app.controller.control.RemoteInfoController;
 import cn.navclub.xtm.core.encode.SocketDataEncode;
 import cn.navclub.xtm.core.enums.SocketCMD;
+import cn.navclub.xtm.kit.XLHelper;
 import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientBuilder;
-import cn.navclub.xtm.kit.client.XTClientListener;
-import cn.navclub.xtm.kit.client.XTClientStatus;
 
+import cn.navclub.xtm.kit.enums.XTClientStatus;
+import cn.navclub.xtm.kit.listener.XTClientListener;
 import io.vertx.core.Vertx;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -56,7 +57,7 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
                 .setPort(XTApp.getInstance().getPort())
                 .build();
 
-        this.xtClient.addListener(this);
+        XLHelper.addListener(this);
 
         this.xtClient.connect().onComplete(it -> {
             var buffer = SocketDataEncode.restRequest(SocketCMD.HEART_BEAT, 0,null);
@@ -116,5 +117,10 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
 
     public XTClient getXtClient() {
         return xtClient;
+    }
+
+    @Override
+    public boolean lStatus() {
+        return true;
     }
 }

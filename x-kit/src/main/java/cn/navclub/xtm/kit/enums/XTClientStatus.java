@@ -1,4 +1,4 @@
-package cn.navclub.xtm.kit.client;
+package cn.navclub.xtm.kit.enums;
 
 public enum XTClientStatus {
     NOT_CONNECT("未连接"),

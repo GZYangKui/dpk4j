@@ -3,6 +3,8 @@ package cn.navclub.xtm.kit.client;
 import cn.navclub.xtm.core.decode.RecordParser;
 import cn.navclub.xtm.core.encode.SocketDataEncode;
 import cn.navclub.xtm.core.enums.SocketCMD;
+import cn.navclub.xtm.kit.enums.XTClientStatus;
+import cn.navclub.xtm.kit.listener.impl.LTDistribute;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -12,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -30,7 +30,6 @@ public class XTClient {
 
     private final XTClientBuilder builder;
 
-    private final List<XTClientListener> listeners;
 
     private final AtomicInteger hbTimers;
 
@@ -53,7 +52,6 @@ public class XTClient {
         this.timeId = DEFAULT_TIMER_ID;
         this.reTimeId = DEFAULT_TIMER_ID;
         this.vertx = builder.getVertx();
-        this.listeners = new ArrayList<>();
         this.hbTimers = new AtomicInteger(0);
         this.statusRef = new AtomicReference<>(XTClientStatus.NOT_CONNECT);
     }
@@ -98,25 +96,7 @@ public class XTClient {
                     record.getSourceAddr(),
                     record.getData().length()
             );
-            //投递消息
-            for (XTClientListener listener : this.listeners) {
-                //判断监听器是否监听该socket命令
-                if (!listener.actions().contains(record.getCmd())) {
-                    continue;
-                }
-                Throwable ex = null;
-                try {
-                    LOG.debug("Delivery message to {} listener", listener.getClass().getSimpleName());
-                    listener.onMessage(this, record);
-                } catch (Exception e) {
-                    ex = e;
-                }
-                if (ex != null) {
-                    LOG.debug("Delivery message failed.", ex);
-                } else {
-                    LOG.debug("Success delivery message to {} listener.", listener.getClass().getSimpleName());
-                }
-            }
+            LTDistribute.getInstance().onTPMessage(this, record);
         });
         this.socket.closeHandler(v -> this.statusChange(XTClientStatus.BROKEN_CONNECT));
         this.socket.handler(parser::handle);
@@ -157,22 +137,6 @@ public class XTClient {
         this.socket = null;
     }
 
-    public synchronized void removeListener(XTClientListener listener) {
-        Objects.requireNonNull(listener);
-        if (!this.listeners.contains(listener)) {
-            return;
-        }
-        this.listeners.remove(listener);
-    }
-
-    public synchronized void addListener(XTClientListener listener) {
-        Objects.requireNonNull(listener);
-        if (this.listeners.contains(listener)) {
-            return;
-        }
-        this.listeners.add(listener);
-    }
-
     private void statusChange(XTClientStatus status) {
         var oldStatus = this.statusRef.get();
         //连接成功=>开启心跳
@@ -186,9 +150,7 @@ public class XTClient {
             this.startReTimer();
         }
         this.statusRef.set(status);
-        for (XTClientListener service : this.listeners) {
-            service.statusHandler(this, oldStatus, status);
-        }
+        LTDistribute.getInstance().onTPStatus(this,oldStatus,status);
     }
 
     private void startReTimer() {

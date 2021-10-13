@@ -13,9 +13,10 @@ import cn.navclub.xtm.core.enums.ClientStatus;
 import cn.navclub.xtm.core.enums.SocketCMD;
 import cn.navclub.xtm.core.enums.TCPDirection;
 import cn.navclub.xtm.core.util.StrUtil;
+import cn.navclub.xtm.kit.XLHelper;
 import cn.navclub.xtm.kit.client.XTClient;
-import cn.navclub.xtm.kit.client.XTClientListener;
 
+import cn.navclub.xtm.kit.listener.XTClientListener;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
@@ -52,7 +53,7 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
         super("control/RemoteInfoView.fxml");
         this.rdPw();
         this.controller = controller;
-        this.controller.getXtClient().addListener(this);
+        XLHelper.addListener(this);
         var update = new MenuItem("更新验证码");
         var custom = new MenuItem("自定义验证码");
 
