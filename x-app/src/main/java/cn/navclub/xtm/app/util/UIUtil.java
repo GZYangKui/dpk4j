@@ -5,19 +5,31 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.image.PixelBuffer;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.WritableImage;
+import javafx.scene.image.WritablePixelFormat;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.OpenCVFrameConverter;
+import org.bytedeco.opencv.global.opencv_imgproc;
+import org.bytedeco.opencv.opencv_core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import static org.bytedeco.opencv.global.opencv_imgproc.COLOR_BGR2BGRA;
+
 public class UIUtil {
     private static final Screen SCREEN = Screen.getPrimary();
+
     private static final Logger LOG = LoggerFactory.getLogger(UIUtil.class);
 
     /**
@@ -33,6 +45,14 @@ public class UIUtil {
     public static Rectangle2D getVSrnSize() {
         return SCREEN.getVisualBounds();
     }
+
+
+    private static final Mat javaCVMat = new Mat();
+
+    private static final OpenCVFrameConverter.ToMat javaCVConv = new OpenCVFrameConverter.ToMat();
+
+    private static final WritablePixelFormat<ByteBuffer> formatByte = PixelFormat.getByteBgraPreInstance();
+
 
     /**
      * 异步返回用户保存节点上渲染情况到图片上
@@ -61,5 +81,23 @@ public class UIUtil {
             }
             return Optional.ofNullable(path);
         });
+    }
+
+    /**
+     *
+     * 将FFMPEG帧转换为javafx图片信息
+     *
+     */
+    public static WritableImage toFXImage(Frame frame) {
+        var w = frame.imageWidth;
+        var h = frame.imageHeight;
+        var mat = javaCVConv.convert(frame);
+        opencv_imgproc.cvtColor(mat, javaCVMat, COLOR_BGR2BGRA);
+
+        var buffer = javaCVMat.createBuffer();
+
+        var pixelBuffer = new PixelBuffer(w, h, buffer, formatByte);
+
+        return new WritableImage(pixelBuffer);
     }
 }

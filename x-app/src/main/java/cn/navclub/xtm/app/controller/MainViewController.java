@@ -26,7 +26,6 @@ import javafx.scene.shape.Circle;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
-
 public class MainViewController extends AbstractWindowFXMLController<BorderPane> implements XTClientListener {
     @FXML
     private Circle sDot;

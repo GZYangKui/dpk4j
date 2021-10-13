@@ -7,7 +7,6 @@ import cn.navclub.xtm.app.config.Constants;
 import cn.navclub.xtm.app.config.XTApp;
 import cn.navclub.xtm.app.control.MonitorToolBox;
 import cn.navclub.xtm.app.event.WinDragEvent;
-import cn.navclub.xtm.app.util.FFmpegUtil;
 import cn.navclub.xtm.app.util.UIUtil;
 import cn.navclub.xtm.kit.encode.SocketDataEncode;
 import cn.navclub.xtm.kit.enums.KeyEventAction;
@@ -31,8 +30,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.FontSmoothingType;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.bytedeco.javacv.Frame;
@@ -277,7 +274,7 @@ public class WinMonitorController extends AbstractWindowFXMLController<BorderPan
      * 刷新视图
      */
     private void onReceive(Frame frame) {
-        var wi = FFmpegUtil.toFXImage(frame);
+        var wi = UIUtil.toFXImage(frame);
         Platform.runLater(() -> {
             //初始化画布高度和宽度
             if (!this.connected) {
