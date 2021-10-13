@@ -10,7 +10,7 @@ public enum NavListItemMeta {
     REMOTE_CONNECT(
             "远程连接",
             AssetsHelper.loadImg("remote.png"),
-            AssetsHelper.loadImg("remote:active.png")
+            AssetsHelper.loadImg("remote_active.png")
     );
     /**
      * item 名称
