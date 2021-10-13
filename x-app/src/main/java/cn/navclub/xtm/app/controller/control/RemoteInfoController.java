@@ -7,14 +7,15 @@ import cn.navclub.xtm.app.controller.MainViewController;
 import cn.navclub.xtm.app.controller.WinGrabController;
 import cn.navclub.xtm.app.controller.WinMonitorController;
 import cn.navclub.xtm.app.util.UIUtil;
+import cn.navclub.xtm.core.decode.RecordParser;
+import cn.navclub.xtm.core.encode.SocketDataEncode;
+import cn.navclub.xtm.core.enums.ClientStatus;
+import cn.navclub.xtm.core.enums.SocketCMD;
+import cn.navclub.xtm.core.enums.TCPDirection;
+import cn.navclub.xtm.core.util.StrUtil;
 import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientListener;
-import cn.navclub.xtm.kit.decode.RecordParser;
-import cn.navclub.xtm.kit.encode.SocketDataEncode;
-import cn.navclub.xtm.kit.enums.ClientStatus;
-import cn.navclub.xtm.kit.enums.SocketCMD;
-import cn.navclub.xtm.kit.enums.TCPDirection;
-import cn.navclub.xtm.kit.util.StrUtil;
+
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import javafx.application.Platform;
@@ -69,14 +70,14 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
     @Override
     public void onMessage(XTClient client, RecordParser.Record record) {
         //执行更新操作
-        if (record.cmd() == SocketCMD.UPDATE_CLIENT_CODE) {
+        if (record.getCmd() == SocketCMD.UPDATE_CLIENT_CODE) {
             var json = record.toJson();
             var code = json.getString(Constants.CODE);
             //更新验证码
             this.updateCode(Integer.parseInt(code));
         }
         //处理远程连接请求
-        if (record.cmd() == SocketCMD.REQUEST_REMOTE && record.direction() == TCPDirection.REQUEST) {
+        if (record.getCmd() == SocketCMD.REQUEST_REMOTE && record.getDirection() == TCPDirection.REQUEST) {
             var json = record.toJson();
             var pw = XTApp.getInstance().getRobotPw();
             var temp = json.getString(Constants.PASSWORD);
@@ -84,29 +85,29 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
             //口令错误
             if (!pw.equals(temp)) {
                 buffer = SocketDataEncode.restResponse(
-                        record.cmd(),
+                        record.getCmd(),
                         ClientStatus.UNAUTHORIZED,
-                        record.sourceAddr(),
+                        record.getSourceAddr(),
                         null
                 );
             } else if (XTApp.getInstance().isRemoting()) {
                 buffer = SocketDataEncode.restResponse(
-                        record.cmd(),
+                        record.getCmd(),
                         ClientStatus.CLIENT_BUSY,
-                        record.sourceAddr(),
+                        record.getSourceAddr(),
                         null
                 );
             } else {
                 var rect = UIUtil.getSrnSize();
                 buffer = SocketDataEncode.restResponse(
-                        record.cmd(),
+                        record.getCmd(),
                         ClientStatus.OK,
-                        record.sourceAddr(),
+                        record.getSourceAddr(),
                         new JsonObject()
                                 .put(Constants.WIDTH, rect.getWidth())
                                 .put(Constants.HEIGHT, rect.getHeight())
                 );
-                XTApp.getInstance().setRemoteCode(record.sourceAddr());
+                XTApp.getInstance().setRemoteCode(record.getSourceAddr());
                 Platform.runLater(() -> {
                     MainViewController.newInstance().getStage().hide();
                     new WinGrabController().openWindow();
@@ -115,14 +116,14 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
             client.send(buffer);
         }
         //处理远程连接响应结果
-        if (record.cmd() == SocketCMD.REQUEST_REMOTE && record.direction() == TCPDirection.RESPONSE) {
-            if (record.status() != ClientStatus.OK) {
+        if (record.getCmd() == SocketCMD.REQUEST_REMOTE && record.getDirection() == TCPDirection.RESPONSE) {
+            if (record.getStatus() != ClientStatus.OK) {
                 Platform.runLater(() -> Notifications
                         .create()
-                        .text(record.status().getMessage())
+                        .text(record.getStatus().getMessage())
                         .position(Pos.TOP_RIGHT).showWarning());
             } else {
-                XTApp.getInstance().setRemoteCode(record.sourceAddr());
+                XTApp.getInstance().setRemoteCode(record.getSourceAddr());
                 Platform.runLater(() -> {
                     MainViewController.newInstance().getStage().hide();
                     var data = record.toJson();
@@ -130,7 +131,7 @@ public class RemoteInfoController extends AbstractFXMLController<VBox> implement
                     var width = data.getDouble(Constants.WIDTH);
                     //获取目标显示器高度
                     var height = data.getDouble(Constants.HEIGHT);
-                    new WinMonitorController(record.sourceAddr(), width, height).openWindow();
+                    new WinMonitorController(record.getSourceAddr(), width, height).openWindow();
                 });
             }
         }

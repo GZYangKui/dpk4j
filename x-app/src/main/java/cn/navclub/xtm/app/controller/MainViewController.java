@@ -6,13 +6,13 @@ import cn.navclub.xtm.app.control.MainWinControl;
 import cn.navclub.xtm.app.control.NavListItem;
 
 import cn.navclub.xtm.app.controller.control.RemoteInfoController;
+import cn.navclub.xtm.core.encode.SocketDataEncode;
+import cn.navclub.xtm.core.enums.SocketCMD;
 import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientBuilder;
 import cn.navclub.xtm.kit.client.XTClientListener;
 import cn.navclub.xtm.kit.client.XTClientStatus;
 
-import cn.navclub.xtm.kit.encode.SocketDataEncode;
-import cn.navclub.xtm.kit.enums.SocketCMD;
 import io.vertx.core.Vertx;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;

@@ -1,7 +1,8 @@
 package cn.navclub.xtm.kit.client;
 
-import cn.navclub.xtm.kit.decode.RecordParser;
-import cn.navclub.xtm.kit.enums.SocketCMD;
+
+import cn.navclub.xtm.core.decode.RecordParser;
+import cn.navclub.xtm.core.enums.SocketCMD;
 
 import java.util.List;
 

@@ -7,6 +7,7 @@ module cn.navclub.xtm.app {
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires cn.navclub.xtm.kit;
+    requires cn.navclub.xtm.app.core;
 
     requires io.vertx.core;
     requires org.kordamp.ikonli.javafx;

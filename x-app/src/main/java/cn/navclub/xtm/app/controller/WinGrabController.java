@@ -5,12 +5,12 @@ import cn.navclub.xtm.app.config.Constants;
 import cn.navclub.xtm.app.config.XTApp;
 import cn.navclub.xtm.app.event.WinDragEvent;
 import cn.navclub.xtm.app.util.UIUtil;
+import cn.navclub.xtm.core.decode.RecordParser;
+import cn.navclub.xtm.core.enums.SocketCMD;
 import cn.navclub.xtm.kit.client.XTClient;
 import cn.navclub.xtm.kit.client.XTClientListener;
-import cn.navclub.xtm.kit.decode.RecordParser;
 import cn.navclub.xtm.kit.enums.KeyEventAction;
 import cn.navclub.xtm.kit.enums.MouseEventAction;
-import cn.navclub.xtm.kit.enums.SocketCMD;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameGrabberProxy;
 import cn.navclub.xtm.kit.proxy.impl.FFmpegFrameRecorderProxy;
 import javafx.application.Platform;
@@ -139,10 +139,10 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
 
     @Override
     public void onMessage(XTClient client, RecordParser.Record record) {
-        if (record.cmd() == SocketCMD.MOUSE_ACTIVE) {
+        if (record.getCmd() == SocketCMD.MOUSE_ACTIVE) {
             this.mouseEvent(record);
         }
-        if (record.cmd() == SocketCMD.KEY_ACTIVE) {
+        if (record.getCmd() == SocketCMD.KEY_ACTIVE) {
             this.keyEvent(record);
         }
     }

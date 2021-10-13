@@ -1,4 +1,4 @@
-package cn.navclub.xtm.kit.util;
+package cn.navclub.xtm.core.util;
 
 import java.util.Locale;
 import java.util.UUID;

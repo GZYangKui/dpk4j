@@ -1,11 +1,6 @@
 plugins {
-    id 'java'
-    id 'application'
     id 'org.jetbrains.kotlin.jvm' version '1.5.31'
 }
-
-group 'cn.navclub'
-version '1.0-SNAPSHOT'
 
 targetCompatibility = 11
 sourceCompatibility = 11
@@ -18,7 +13,7 @@ repositories {
 }
 
 jar {
-    archivesBaseName = "xtm"
+    archivesBaseName = "dkp4j-server"
     from {
         configurations.runtimeClasspath.collect {
             zipTree(it)
@@ -48,8 +43,7 @@ sourceSets {
 }
 
 dependencies {
-    implementation group: 'io.vertx', name: 'vertx-core', version: '4.1.4'
-    implementation group: 'io.vertx', 'name': 'vertx-web', version: '4.1.4'
-    implementation group: 'io.vertx', name: 'vertx-lang-kotlin', version: '4.1.4'
-    implementation group: 'io.vertx', name: 'vertx-lang-kotlin-coroutines', version: '4.1.4'
+    implementation project(":x-core")
+    implementation group: 'io.vertx', name: 'vertx-lang-kotlin', version: "${rootProject.ext.vertxVersion}"
+    implementation group: 'io.vertx', name: 'vertx-lang-kotlin-coroutines', version: "${rootProject.ext.vertxVersion}"
 }

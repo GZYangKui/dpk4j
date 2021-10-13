@@ -1,13 +1,11 @@
-package cn.navclub.xt.server.encode;
+package cn.navclub.xtm.core.encode;
 
-import cn.navclub.xt.server.enums.ClientStatus;
-import cn.navclub.xt.server.enums.SocketCMD;
-import cn.navclub.xt.server.enums.TCPDirection;
-import cn.navclub.xt.server.util.ByteUtil;
+import cn.navclub.xtm.core.enums.ClientStatus;
+import cn.navclub.xtm.core.enums.SocketCMD;
+import cn.navclub.xtm.core.enums.TCPDirection;
+import cn.navclub.xtm.core.util.ByteUtil;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
-
-import java.util.Arrays;
 
 /**
  * 根据自定义定义协议方式,组装格式化数据

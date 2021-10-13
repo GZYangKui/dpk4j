@@ -1,12 +1,13 @@
-package cn.navclub.xt.server.decode;
+package cn.navclub.xtm.core.decode;
 
-import cn.navclub.xt.server.decode.impl.RecordParserImpl;
-import cn.navclub.xt.server.encode.SocketDataEncode;
-import cn.navclub.xt.server.enums.ClientStatus;
-import cn.navclub.xt.server.enums.SocketCMD;
-import cn.navclub.xt.server.enums.TCPDirection;
+import cn.navclub.xtm.core.decode.impl.RecordParserImpl;
+import cn.navclub.xtm.core.encode.SocketDataEncode;
+import cn.navclub.xtm.core.enums.ClientStatus;
+import cn.navclub.xtm.core.enums.SocketCMD;
+import cn.navclub.xtm.core.enums.TCPDirection;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.JsonObject;
 
 /**
  * 封装数据解码器通用接口
@@ -22,7 +23,7 @@ public interface RecordParser {
     /**
      * 注册解码成功后的回调句柄
      */
-    RecordParser handler(Handler<RecordParserImpl.Record> handler);
+    RecordParser handler(Handler<Record> handler);
 
     /**
      * 注册异常处理句柄
@@ -104,6 +105,13 @@ public interface RecordParser {
                     getDirection(),
                     arr
             );
+        }
+
+        /**
+         * 尝试将响应数据转换为json数据
+         */
+        public JsonObject toJson() {
+            return this.data.toJsonObject();
         }
 
         public Buffer getData() {

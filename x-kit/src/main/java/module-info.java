@@ -1,5 +1,6 @@
 module cn.navclub.xtm.kit {
     requires io.vertx.core;
+    requires cn.navclub.xtm.app.core;
 
     requires transitive org.slf4j;
     requires transitive ch.qos.logback.classic;
@@ -18,11 +19,8 @@ module cn.navclub.xtm.kit {
     requires transitive org.bytedeco.openblas.linux.x86_64;
 
 
-    exports cn.navclub.xtm.kit.util;
     exports cn.navclub.xtm.kit.proxy;
-    exports cn.navclub.xtm.kit.decode;
     exports cn.navclub.xtm.kit.client;
-    exports cn.navclub.xtm.kit.proxy.impl;
     exports cn.navclub.xtm.kit.enums;
-    exports cn.navclub.xtm.kit.encode;
+    exports cn.navclub.xtm.kit.proxy.impl;
 }

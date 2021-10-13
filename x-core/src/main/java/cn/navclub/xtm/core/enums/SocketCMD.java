@@ -1,4 +1,4 @@
-package cn.navclub.xt.server.enums;
+package cn.navclub.xtm.core.enums;
 
 /**
  * 封装socket指令集

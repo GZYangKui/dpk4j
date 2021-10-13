@@ -1,4 +1,4 @@
-package cn.navclub.xt.server.enums;
+package cn.navclub.xtm.core.enums;
 
 public enum ClientStatus {
     OK(200, "操作成功"),

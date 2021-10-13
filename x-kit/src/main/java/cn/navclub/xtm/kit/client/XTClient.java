@@ -1,8 +1,8 @@
 package cn.navclub.xtm.kit.client;
 
-import cn.navclub.xtm.kit.decode.RecordParser;
-import cn.navclub.xtm.kit.encode.SocketDataEncode;
-import cn.navclub.xtm.kit.enums.SocketCMD;
+import cn.navclub.xtm.core.decode.RecordParser;
+import cn.navclub.xtm.core.encode.SocketDataEncode;
+import cn.navclub.xtm.core.enums.SocketCMD;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -87,15 +87,21 @@ public class XTClient {
         var parser = RecordParser.create();
         parser.handler(record -> {
             //心跳包
-            if (record.cmd() == SocketCMD.HEART_BEAT) {
+            if (record.getCmd() == SocketCMD.HEART_BEAT) {
                 this.hbTimers.getAndAdd(-1);
                 return;
             }
-            LOG.debug("Receive TCP Package [Direction:{},Cmd:{},Source Address:{},Data Length:{} byte]", record.direction(), record.cmd(), record.sourceAddr(), record.length());
+            LOG.debug(
+                    "Receive TCP Package [Direction:{},Cmd:{},Source Address:{},Data Length:{} byte]",
+                    record.getDirection(),
+                    record.getCmd(),
+                    record.getSourceAddr(),
+                    record.getData().length()
+            );
             //投递消息
             for (XTClientListener listener : this.listeners) {
                 //判断监听器是否监听该socket命令
-                if (!listener.actions().contains(record.cmd())) {
+                if (!listener.actions().contains(record.getCmd())) {
                     continue;
                 }
                 Throwable ex = null;
@@ -106,7 +112,7 @@ public class XTClient {
                     ex = e;
                 }
                 if (ex != null) {
-                    LOG.debug("Delivery message failed cause:{}", ex.getMessage());
+                    LOG.debug("Delivery message failed.", ex);
                 } else {
                     LOG.debug("Success delivery message to {} listener.", listener.getClass().getSimpleName());
                 }

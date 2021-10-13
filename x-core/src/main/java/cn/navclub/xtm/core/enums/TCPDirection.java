@@ -1,4 +1,4 @@
-package cn.navclub.xtm.kit.enums;
+package cn.navclub.xtm.core.enums;
 
 public enum TCPDirection {
     /**

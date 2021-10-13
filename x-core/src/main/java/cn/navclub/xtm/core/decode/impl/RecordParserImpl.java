@@ -1,10 +1,10 @@
-package cn.navclub.xt.server.decode.impl;
+package cn.navclub.xtm.core.decode.impl;
 
-import cn.navclub.xt.server.decode.RecordParser;
-import cn.navclub.xt.server.enums.ClientStatus;
-import cn.navclub.xt.server.enums.SocketCMD;
-import cn.navclub.xt.server.enums.TCPDirection;
-import cn.navclub.xt.server.util.ByteUtil;
+import cn.navclub.xtm.core.decode.RecordParser;
+import cn.navclub.xtm.core.enums.ClientStatus;
+import cn.navclub.xtm.core.enums.SocketCMD;
+import cn.navclub.xtm.core.enums.TCPDirection;
+import cn.navclub.xtm.core.util.ByteUtil;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 
@@ -32,7 +32,7 @@ import io.vertx.core.buffer.Buffer;
  *     </tr>
  * </table>
  * <p>
- * 关于数据类型,请查看 {@link cn.navclub.xt.server.enums.SocketCMD}
+ * 关于数据类型,请查看 {@link SocketCMD}
  *
  * @author yangkui
  */
