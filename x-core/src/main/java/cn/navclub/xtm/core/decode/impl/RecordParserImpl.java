@@ -67,44 +67,49 @@ public class RecordParserImpl implements RecordParser {
             return;
         }
         parsing = true;
-
+        var i = 0;
         try {
             do {
-                var i = 0;
-                var arr = this.buffer.getBytes();
+                var arr = this.buffer.getBytes(i, this.buffer.length());
                 //数据头长度不够=>不处理
                 if (arr.length < HEADER_LENGTH) {
+                    //丢弃不符合协议规定数据
+                    if (i > 0) {
+                        this.buffer = this.buffer.getBuffer(i, this.buffer.length());
+                    }
                     return;
                 }
                 var a = arr[i];
                 var b = arr[i + 1];
                 //未检测到标志信息
                 if (!(a == 'X' && b == 'T')) {
-                    return;
+                    ++i;
+                    continue;
                 }
                 var cmd = arr[i + 2];
                 //目标地址
-                var addr = ByteUtil.byte2int(this.buffer.getBytes(3, 7));
+                var addr = ByteUtil.byte2int(this.buffer.getBytes(i + 3, i + 7));
                 //源地址
-                var source = ByteUtil.byte2int(this.buffer.getBytes(7, 11));
+                var source = ByteUtil.byte2int(this.buffer.getBytes(i + 7, i + 11));
                 //消息状态
-                var status = ByteUtil.byte2int(this.buffer.getBytes(11, 15));
+                var status = ByteUtil.byte2int(this.buffer.getBytes(i + 11, i + 15));
                 //消息长度
-                var len = ByteUtil.byte2int(this.buffer.getBytes(15, 19));
+                var len = ByteUtil.byte2int(this.buffer.getBytes(i + 15, i + 19));
                 //消息方向
-                var direction = this.buffer.getByte(19);
+                var direction = this.buffer.getByte(i + 19);
 
-                var maxLen = HEADER_LENGTH + len;
+                //计算当前数据包真实长度
+                var maxLen = HEADER_LENGTH + len + i;
                 //数据长度不够=>不做处理
                 if (maxLen > this.buffer.length()) {
                     return;
                 }
-                var buffer = this.buffer.getBuffer(0, maxLen);
-                final Buffer data;
+                var buffer = this.buffer.getBuffer(i, maxLen);
+
+                //解析数据
+                Buffer data = null;
                 if (len > 0) {
-                    data = this.buffer.getBuffer(HEADER_LENGTH, maxLen);
-                } else {
-                    data = null;
+                    data = this.buffer.getBuffer(i + HEADER_LENGTH, maxLen);
                 }
                 var record = new Record(
                         SocketCMD.getInstance(cmd),
@@ -118,6 +123,7 @@ public class RecordParserImpl implements RecordParser {
                 );
                 this.handler.handle(record);
                 this.buffer = this.buffer.getBuffer(maxLen, this.buffer.length());
+                i = 0;
             } while (true);
         } finally {
             parsing = false;
