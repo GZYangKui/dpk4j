@@ -9,37 +9,43 @@ int main(void) {
         printf("lzo_init() failed!!!\n");
         return 3;
     }
-    FILE *file = fopen("./test.txt", "r");
-    FILE *out = fopen("./out.txt","wb");
+    FILE *file = fopen("./test.AppImage", "r");
+    FILE *out = fopen("./out.AppImage", "wb");
     if (file == NULL) {
         printf("目标文件不存在");
         return 3;
     }
 
-    if (out == NULL){
+    if (out == NULL) {
         printf("tttt");
     }
-
-    size_t as = 5;
+    //1MB
+    size_t as = 1024 * 1024;
     size_t size = sizeof(char);
-
+    size_t temp;
     do {
         char arr[as];
 
-        size_t temp =  fread(&arr,size,as,file);
+        temp = fread(&arr, size, as, file);
         if (temp == 0) {
             int code = ferror(file);
-            printf("err_code=%d\n",code);
-            exit(code);
-        }else{
-            printf("成功读取:%ld块数据\n",temp);
-            lzo_bytep i_arr = compress((unsigned char *) &arr);
-            lzo_bytep o_arr  = decompress(i_arr);
-            fwrite(o_arr,size,as,out);
+            if (code != 0) {
+                printf("err_code=%d\n", code);
+                exit(code);
+            }
+        } else {
+            lzo_uint i_len = 0;
+            lzo_bytep o_arr = NULL;
+            lzo_bytep i_arr = NULL;
+            lzo_uint in_len = temp * size;
+            printf("成功读取:%ld字节数据\n", in_len);
+            compress((unsigned char *) &arr, &i_arr, in_len, &i_len);
+            decompress(i_arr, i_len, &o_arr, &in_len);
+            fwrite(o_arr, size, in_len, out);
             free(i_arr);
             free(o_arr);
         }
-    } while (size >= 0);
+    } while (temp > 0);
 
     fclose(out);
     fclose(file);
