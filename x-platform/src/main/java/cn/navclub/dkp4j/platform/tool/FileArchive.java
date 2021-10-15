@@ -22,6 +22,7 @@ public class FileArchive {
         var file = new File("test.txt");
         var file1 = new File("test.txt.dkp4j");
 
+
         var rs = compress(file,file1);
 
         System.out.println(ArcResult.getInstance(rs).getMessage());

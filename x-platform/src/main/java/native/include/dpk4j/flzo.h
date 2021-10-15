@@ -19,13 +19,13 @@
  * @param src 待压缩字符流
  * @return 如果压缩失败返回<code>NULL</code,否者返回压缩后的数据流
  */
-extern size_t compress(lzo_bytep, lzo_bytep*, lzo_uint, lzo_uint *);
+extern uint compress(lzo_bytep, lzo_bytep*, lzo_uint, lzo_uint *);
 
 /**
  *
  * 还原被压缩的数据流
  *
  */
-extern size_t decompress(lzo_bytep, lzo_uint, lzo_bytep *, lzo_uint *);
+extern uint decompress(lzo_bytep, lzo_uint, lzo_bytep*, lzo_uint *);
 
 #endif //DKG4J_FLZO_H

@@ -27,10 +27,16 @@ JNIEXPORT jint JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_compress
 
     jstring srStr = (*env)->CallObjectMethod(env, src, sMdId);
     jstring dsStr = (*env)->CallObjectMethod(env, dest, dMdId);
-    jboolean isCopy = '1';
+    jboolean isCopy = JNI_TRUE;
 
     const char *srPath = (*env)->GetStringUTFChars(env, srStr, &isCopy);
     const char *dsPath = (*env)->GetStringUTFChars(env, dsStr, &isCopy);
+
+    //手动释放局部变量
+    (*env)->DeleteLocalRef(env, sClazz);
+    (*env)->DeleteLocalRef(env, dClass);
+    (*env)->DeleteLocalRef(env, srStr);
+    (*env)->DeleteLocalRef(env, dsStr);
 
     return (jint) do_compress(srPath, dsPath);
 }
@@ -60,8 +66,8 @@ extern uint do_compress(const char *srcPath, const char *dsPath) {
         memset(buffer, 0, CHUNK_NUM * CHUNK_SIZE);
         num = fread(buffer, CHUNK_SIZE, CHUNK_NUM, in);
         if (num == 0) {
-            uint code = ferror(in);
-            if (code == 0) {
+            uint code;
+            if ((code = ferror(in)) == 0) {
                 break;
             }
             printf("读取文件过程发生异常:%d", code);
@@ -70,9 +76,10 @@ extern uint do_compress(const char *srcPath, const char *dsPath) {
         lzo_bytep out_buf = NULL;
         lzo_uint out_len = (lzo_uint) NULL;
         lzo_uint in_len = num * CHUNK_SIZE;
-        size_t rs = compress(buffer, &out_buf, in_len, &out_len);
+        printf("开始执行压缩\n");
+        uint rs = compress(buffer, &out_buf, in_len, &out_len);
         if (rs != 0) {
-            printf("压缩数据失败:%ld", rs);
+            printf("压缩数据失败:%d", rs);
             return CD_COM_HAPPENED_EXCEPT;
         }
         size_t _num = fwrite(out_buf, CHUNK_SIZE, out_len, out);
