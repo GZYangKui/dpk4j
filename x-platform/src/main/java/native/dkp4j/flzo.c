@@ -10,7 +10,8 @@
 
 size_t cal_out_len(size_t in_len);
 
-extern uint compress(lzo_bytep src, lzo_bytep*out, lzo_uint in_len, lzo_uint *out_len) {
+extern uint dkp4j_compress(lzo_bytep src, lzo_bytep*out, lzo_uint in_len, lzo_uint *out_len) {
+    printf("=========编码=========\n");
     size_t t_out_len = cal_out_len(in_len);
     *out = (lzo_bytep) malloc(t_out_len);
     lzo_voidp wrkmem = (lzo_voidp) malloc(LZO1X_1_MEM_COMPRESS);
@@ -23,6 +24,7 @@ extern uint compress(lzo_bytep src, lzo_bytep*out, lzo_uint in_len, lzo_uint *ou
     }
     uint rs = lzo1x_1_compress(src, in_len, *out, out_len, wrkmem);
     printf("rs=%d\n", rs);
+    free(wrkmem);
     if (rs == LZO_E_OK) {
         printf("compressed %lu bytes into %lu bytes\n",
                (unsigned long) in_len, (unsigned long) *(out_len));
@@ -35,6 +37,7 @@ extern uint compress(lzo_bytep src, lzo_bytep*out, lzo_uint in_len, lzo_uint *ou
     }
     return C_D_SUCCESS;
 }
+
 
 extern uint decompress(lzo_bytep in, lzo_uint in_len, lzo_bytep*out, lzo_uint *out_len) {
     *out = malloc(cal_out_len(in_len));

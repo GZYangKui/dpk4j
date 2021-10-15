@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "include/FileArchive.h"
+uint a(){
+
+}
 int main(void) {
     const char *srcPath = "/home/yangkui/study/dkp4j/test.txt";
     const char *dsPath = "/home/yangkui/study/dkp4j/test.txt.dkp4j";

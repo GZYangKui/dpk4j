@@ -19,7 +19,12 @@
  * @param src 待压缩字符流
  * @return 如果压缩失败返回<code>NULL</code,否者返回压缩后的数据流
  */
-extern uint compress(lzo_bytep, lzo_bytep*, lzo_uint, lzo_uint *);
+//extern uint compress(lzo_bytep, lzo_bytep*, lzo_uint, lzo_uint *);
+
+extern uint dkp4j_compress(lzo_bytep, lzo_bytep*, lzo_uint, lzo_uint *);
+
+
+extern uint test(lzo_bytep, lzo_bytep*, lzo_uint, lzo_uint *);
 
 /**
  *
