@@ -3288,7 +3288,7 @@ LZO_COMPILE_TIME_ASSERT_HEADER(sizeof(lzo_int_fast64_t) == sizeof(lzo_uint_fast6
 #endif
 
 #undef LZO_HAVE_CONFIG_H
-#include "include/minilzo.h"
+#include "../include/dpk4j/minilzo.h"
 
 #if !defined(MINILZO_VERSION) || (MINILZO_VERSION != 0x20a0)
 #  error "version mismatch in miniLZO source files"

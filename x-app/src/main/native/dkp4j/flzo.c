@@ -5,14 +5,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "include/flzo.h"
-#include "include/minilzo.h"
+#include "../include/dpk4j/flzo.h"
+#include "../include/dpk4j/minilzo.h"
 
 size_t cal_out_len(size_t in_len);
 
 extern size_t compress(lzo_bytep src, lzo_bytep*out, lzo_uint in_len, lzo_uint *out_len) {
     size_t t_out_len = cal_out_len(in_len);
-    *out = malloc(t_out_len);
+    *out = (lzo_bytep) malloc(t_out_len);
     lzo_voidp wrkmem = (lzo_voidp) malloc(LZO1X_1_MEM_COMPRESS);
 
     memset(*out, 0, t_out_len);
@@ -44,7 +44,7 @@ extern size_t decompress(lzo_bytep in, lzo_uint in_len, lzo_bytep*out, lzo_uint 
         return OUT_OF_MEMORY;
     }
 
-    int rs = lzo1x_decompress(in, in_len, *out, out_len, NULL);
+    uint rs = lzo1x_decompress(in, in_len, *out, out_len, NULL);
 
     if (rs == LZO_E_OK) {
         printf("decompressed %lu bytes back into %lu bytes\n",

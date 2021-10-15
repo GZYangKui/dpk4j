@@ -4,4 +4,5 @@ include 'x-core'
 include 'x-app'
 include 'x-kit'
 include 'x-server'
+include 'x-platform'
 
