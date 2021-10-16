@@ -4,16 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "include/tool.h"
 #include "include/dpk4j/flzo.h"
 #include "include/FileArchive.h"
 #include "include/jni/cn_navclub_dkp4j_platform_tool_FileArchive.h"
 
-/*
- * Class:     cn_navclub_dkp4j_platform_tool_FileArchive
- * Method:    compress
- * Signature: (Ljava/io/File;Ljava/io/File;)I
- */
-JNIEXPORT jint JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_compress
+
+JNIEXPORT jint JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_fileEncode
         (JNIEnv *env, jclass clazz, jobject src, jobject dest) {
     if (src == NULL || dest == NULL) {
         return NULL_POINTER;
@@ -39,17 +36,76 @@ JNIEXPORT jint JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_compress
     (*env)->DeleteLocalRef(env, srStr);
     (*env)->DeleteLocalRef(env, dsStr);
 
-    return (jint)do_compress(srPath, dsPath);
+    return (jint) do_compress(srPath, dsPath);
 }
 
-/*
- * Class:     cn_navclub_dkp4j_platform_tool_FileArchive
- * Method:    decompress
- * Signature: (Ljava/io/File;Ljava/io/File;)I
- */
-JNIEXPORT jint JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_decompress
+
+JNIEXPORT jint JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_fileDecode
         (JNIEnv *env, jclass clazz, jobject src, jobject dest) {
 
+}
+
+
+JNIEXPORT jbyteArray JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_byteEncode
+        (JNIEnv *env, jclass clazz, jbyteArray array) {
+    //待压缩数组为空=>抛出异常
+    if (array == NULL) {
+        (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/NullPointer"), "待压缩数组不能为空!");
+        return NULL;
+    }
+    jsize size = (*env)->GetArrayLength(env, array);
+
+    //返回空数组
+    if (size == 0) {
+        return (*env)->NewByteArray(env, 0);
+    }
+
+    lzo_uint out_len = 0;
+    lzo_bytep buffer = NULL;
+
+    //将java字节数组转换为无符号字节
+    lzo_bytep in = dkp4j_jbyte_to_cbyte(env, array);
+
+    uint rs = dkp4j_compress(in, &buffer, size, &out_len);
+
+    if (rs != C_D_SUCCESS) {
+        (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeExcept"), "压缩过程发生错误!");
+        return NULL;
+    }
+
+    //将c字节数组转换为java字节数组
+    jbyteArray c_arr = dkp4j_cbyte_to_jbyte(env, buffer, (jsize) out_len);
+
+    // 释放资源
+    free(buffer);
+
+    return c_arr;
+}
+
+
+JNIEXPORT jbyteArray JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_byteDecode
+        (JNIEnv *env, jclass clazz, jbyteArray array) {
+    if (array == NULL) {
+        (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/NullPointer"), "待解码数据不能为空!");
+        return NULL;
+    }
+    jsize size = (*env)->GetArrayLength(env, array);
+    if (size == 0) {
+        return array;
+    }
+    lzo_uint out_len = 0;
+    lzo_bytep out = NULL;
+    lzo_bytep in = dkp4j_jbyte_to_cbyte(env, array);
+    lzo_uint rs = dkp4j_decompress(in, size, &out, &out_len);
+    if (rs != C_D_SUCCESS) {
+        (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeExcept"), "解压过程发生错误!");
+        return NULL;
+    }
+    jbyteArray arr = dkp4j_cbyte_to_jbyte(env, out, (jsize) out_len);
+    //释放资源
+    free(in);
+    free(out);
+    return arr;
 }
 
 
@@ -77,12 +133,8 @@ extern uint do_compress(const char *srcPath, const char *dsPath) {
         lzo_uint out_len = 0;
         lzo_bytep out_buf = NULL;
         lzo_uint in_len = num * CHUNK_SIZE;
-        printf("开始压缩\n");
-        uint rs;
-        printf("开始压缩:%d\n", rs);
-        rs = dkp4j_compress(buffer, &out_buf, in_len, &out_len);
-        printf("结束压缩:%d\n", rs);
-        if (rs != 0) {
+        u_int rs = dkp4j_compress(buffer, &out_buf, in_len, &out_len);
+        if (rs != C_D_SUCCESS) {
             printf("压缩数据失败:%d", rs);
             return CD_COM_HAPPENED_EXCEPT;
         }

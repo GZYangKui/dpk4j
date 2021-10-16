@@ -24,13 +24,11 @@
 extern uint dkp4j_compress(lzo_bytep, lzo_bytep*, lzo_uint, lzo_uint *);
 
 
-extern uint test(lzo_bytep, lzo_bytep*, lzo_uint, lzo_uint *);
-
 /**
  *
  * 还原被压缩的数据流
  *
  */
-extern uint decompress(lzo_bytep, lzo_uint, lzo_bytep*, lzo_uint *);
+extern uint dkp4j_decompress(lzo_bytep, lzo_uint, lzo_bytep*, lzo_uint *);
 
 #endif //DKG4J_FLZO_H

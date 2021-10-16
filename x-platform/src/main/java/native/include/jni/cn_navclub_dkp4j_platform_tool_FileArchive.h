@@ -9,19 +9,35 @@ extern "C" {
 #endif
 /*
  * Class:     cn_navclub_dkp4j_platform_tool_FileArchive
- * Method:    compress
+ * Method:    fileEncode
  * Signature: (Ljava/io/File;Ljava/io/File;)I
  */
-JNIEXPORT jint JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_compress
+JNIEXPORT jint JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_fileEncode
   (JNIEnv *, jclass, jobject, jobject);
 
 /*
  * Class:     cn_navclub_dkp4j_platform_tool_FileArchive
- * Method:    decompress
+ * Method:    fileDecode
  * Signature: (Ljava/io/File;Ljava/io/File;)I
  */
-JNIEXPORT jint JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_decompress
+JNIEXPORT jint JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_fileDecode
   (JNIEnv *, jclass, jobject, jobject);
+
+/*
+ * Class:     cn_navclub_dkp4j_platform_tool_FileArchive
+ * Method:    byteEncode
+ * Signature: ([B)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_byteEncode
+  (JNIEnv *, jclass, jbyteArray);
+
+/*
+ * Class:     cn_navclub_dkp4j_platform_tool_FileArchive
+ * Method:    byteDecode
+ * Signature: ([B)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_byteDecode
+  (JNIEnv *, jclass, jbyteArray);
 
 #ifdef __cplusplus
 }

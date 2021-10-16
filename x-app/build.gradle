@@ -38,6 +38,7 @@ jar {
 dependencies {
     implementation project(":x-kit")
     implementation project(":x-core")
+    implementation project(":x-platform")
     implementation('org.controlsfx:controlsfx:11.1.0')
     implementation('com.dlsc.formsfx:formsfx-core:11.4.2') {
         exclude(group: 'org.openjfx')

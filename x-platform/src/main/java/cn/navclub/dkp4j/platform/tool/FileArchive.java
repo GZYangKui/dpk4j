@@ -7,13 +7,24 @@ public class FileArchive {
     static {
         System.loadLibrary("jnidkp4j");
     }
+
     /**
      * 压缩src文件到dest文件
      */
-    public static native int compress(File src, File dest);
+    public static native int fileEncode(File src, File dest);
 
     /**
      * 解压src文件到dest文件
      */
-    public static native int decompress(File src, File dest);
+    public static native int fileDecode(File src, File dest);
+
+    /**
+     * 压缩字节数组
+     */
+    public static native byte[] byteEncode(byte[] src);
+
+    /**
+     * 解压字节数组
+     */
+    public static native byte[] byteDecode(byte[] src);
 }

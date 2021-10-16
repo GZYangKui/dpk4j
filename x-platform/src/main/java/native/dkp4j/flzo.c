@@ -11,7 +11,6 @@
 size_t cal_out_len(size_t in_len);
 
 extern uint dkp4j_compress(lzo_bytep src, lzo_bytep*out, lzo_uint in_len, lzo_uint *out_len) {
-    printf("=========编码=========\n");
     size_t t_out_len = cal_out_len(in_len);
     *out = (lzo_bytep) malloc(t_out_len);
     lzo_voidp wrkmem = (lzo_voidp) malloc(LZO1X_1_MEM_COMPRESS);
@@ -39,14 +38,16 @@ extern uint dkp4j_compress(lzo_bytep src, lzo_bytep*out, lzo_uint in_len, lzo_ui
 }
 
 
-extern uint decompress(lzo_bytep in, lzo_uint in_len, lzo_bytep*out, lzo_uint *out_len) {
-    *out = malloc(cal_out_len(in_len));
+extern uint dkp4j_decompress(lzo_bytep in, lzo_uint in_len, lzo_bytep*out, lzo_uint *out_len) {
+
+    *out = (lzo_bytep) malloc(cal_out_len(in_len));
 
     if (*out == NULL) {
         printf("Out of memory!");
         return OUT_OF_MEMORY;
     }
 
+    printf("%p\n,out_len=%p\n",out,out_len);
     uint rs = lzo1x_decompress(in, in_len, *out, out_len, NULL);
 
     if (rs == LZO_E_OK) {
@@ -59,5 +60,5 @@ extern uint decompress(lzo_bytep in, lzo_uint in_len, lzo_bytep*out, lzo_uint *o
 }
 
 size_t cal_out_len(size_t in_len) {
-    return in_len + in_len / 16 + 64 + 3;
+    return in_len + in_len / (16 + 64 + 3);
 }

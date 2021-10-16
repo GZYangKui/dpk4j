@@ -15,7 +15,7 @@ find_package(JNI REQUIRED)
 
 include_directories(${JNI_INCLUDE_DIRS})
 
-add_library(jnidkp4j SHARED ${SRC_DIRS} ${INCLUDE_DIR} include/FileArchive.h)
+add_library(jnidkp4j SHARED ${SRC_DIRS} ${INCLUDE_DIR} include/FileArchive.h include/tool.h tool.c)
 
 add_executable(main ${SRC_DIRS} ${INCLUDE_DIR})
 

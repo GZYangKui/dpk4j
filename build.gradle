@@ -20,6 +20,10 @@ subprojects {
     }
 
     dependencies {
+        // https://mvnrepository.com/artifact/junit/junit
+        testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+        // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.1'
         implementation group: 'io.vertx',name:'vertx-core',version: "${rootProject.ext.vertxVersion}"
         implementation group: 'io.vertx', 'name': 'vertx-web', version: "${rootProject.ext.vertxVersion}"
         implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0-alpha5'
