@@ -3,6 +3,12 @@ package cn.navclub.dkp4j.platform.tool;
 
 import java.io.File;
 
+/**
+ *
+ * @deprecated 由于lzo压缩算法压缩率不理想,暂时弃用该压缩算法，改用7z算法
+ *
+ */
+@Deprecated
 public class FileArchive {
     static {
         System.loadLibrary("jnidkp4j");

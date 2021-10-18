@@ -39,15 +39,14 @@ extern uint dkp4j_compress(lzo_bytep src, lzo_bytep*out, lzo_uint in_len, lzo_ui
 
 
 extern uint dkp4j_decompress(lzo_bytep in, lzo_uint in_len, lzo_bytep*out, lzo_uint *out_len) {
-
-    *out = (lzo_bytep) malloc(cal_out_len(in_len));
+    //假设压缩率达到50%
+    *out = (lzo_bytep) malloc(in_len * 2);
 
     if (*out == NULL) {
         printf("Out of memory!");
         return OUT_OF_MEMORY;
     }
 
-    printf("%p\n,out_len=%p\n",out,out_len);
     uint rs = lzo1x_decompress(in, in_len, *out, out_len, NULL);
 
     if (rs == LZO_E_OK) {

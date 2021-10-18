@@ -97,21 +97,23 @@ JNIEXPORT jbyteArray JNICALL Java_cn_navclub_dkp4j_platform_tool_FileArchive_byt
     lzo_bytep out = NULL;
     lzo_bytep in = dkp4j_jbyte_to_cbyte(env, array);
     lzo_uint rs = dkp4j_decompress(in, size, &out, &out_len);
+
     if (rs != C_D_SUCCESS) {
         (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/RuntimeExcept"), "解压过程发生错误!");
         return NULL;
     }
-    jbyteArray arr = dkp4j_cbyte_to_jbyte(env, out, (jsize) out_len);
+//    jbyteArray arr = dkp4j_cbyte_to_jbyte(env, out, (jsize) out_len);
     //释放资源
     free(in);
-    free(out);
-    return arr;
+//    free(out);
+    return NULL;
 }
 
 
 extern uint do_compress(const char *srcPath, const char *dsPath) {
     FILE *in = fopen(srcPath, "rb");
     FILE *out = fopen(dsPath, "w");
+
 
     //目标文件不存在
     if (in == NULL) {
