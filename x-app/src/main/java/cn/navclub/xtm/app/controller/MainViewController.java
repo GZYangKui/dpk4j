@@ -2,7 +2,7 @@ package cn.navclub.xtm.app.controller;
 
 import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 import cn.navclub.xtm.app.config.XTApp;
-import cn.navclub.xtm.app.control.MainWinControl;
+import cn.navclub.xtm.app.control.WinControl;
 import cn.navclub.xtm.app.control.NavListItem;
 
 import cn.navclub.xtm.app.controller.control.RemoteInfoController;
@@ -45,7 +45,7 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
         super("MainView.fxml");
 
         this.listView.getItems().addAll(NavListItem.create());
-        this.contentPane.setTop(new MainWinControl(this));
+        this.contentPane.setTop(new WinControl<>(this));
 
         this.getStage().setResizable(false);
         this.getStage().setTitle("朝天椒远程连接");

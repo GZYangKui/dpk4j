@@ -1,6 +1,7 @@
 package cn.navclub.xtm.app;
 
 import cn.navclub.xtm.app.config.XTApp;
+import cn.navclub.xtm.app.controller.LoginViewController;
 import cn.navclub.xtm.app.controller.MainViewController;
 import javafx.application.Application;
 
@@ -23,7 +24,7 @@ public class XTM extends Application {
         XTApp.getInstance()
                 .setHost("127.0.0.1")
                 .setPort(8888);
-        MainViewController.newInstance().openWindow();
+        new LoginViewController().openWindow();
     }
 
 }

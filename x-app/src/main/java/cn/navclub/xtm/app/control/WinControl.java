@@ -1,9 +1,11 @@
 package cn.navclub.xtm.app.control;
 
 import cn.navclub.xtm.app.AssetsHelper;
+import cn.navclub.xtm.app.base.AbstractWindowFXMLController;
 import cn.navclub.xtm.app.controller.MainViewController;
 import cn.navclub.xtm.app.event.WinDragEvent;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.image.ImageView;
@@ -11,14 +13,14 @@ import javafx.scene.layout.HBox;
 import javafx.stage.WindowEvent;
 
 /**
- * {@link cn.navclub.xtm.app.controller.MainViewController} 窗口控制器(功能键、最小化、关闭)
+ * 自定义窗口控制器(功能键、最小化、关闭)
  */
-public class MainWinControl extends HBox {
+public class WinControl<T extends Parent> extends HBox {
     private static final String DEFAULT_STYLE_CLASS = "win_control";
 
-    private final MainViewController controller;
+    private final AbstractWindowFXMLController<T> controller;
 
-    public MainWinControl(final MainViewController controller) {
+    public WinControl(final AbstractWindowFXMLController<T> controller) {
         this.controller = controller;
 
         var func = new MenuButton();
@@ -39,6 +41,8 @@ public class MainWinControl extends HBox {
 
         //注册拖拽事件
         WinDragEvent.register(this.controller.getStage(), this);
+
+        AssetsHelper.addStyleSheets(this,"control/WinControlViewStyle.css");
     }
 
 

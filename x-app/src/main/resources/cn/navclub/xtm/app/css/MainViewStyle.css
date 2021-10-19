@@ -44,20 +44,20 @@
     -fx-border-color: #292929;
 }
 
-.win_control .button {
-    -fx-padding: .7em;
-}
+/*.win_control .button {*/
+/*    -fx-padding: .7em;*/
+/*}*/
 
-.win_control .button, .win_control .menu-button {
-    -fx-background-color: transparent;
-}
+/*.win_control .button, .win_control .menu-button {*/
+/*    -fx-background-color: transparent;*/
+/*}*/
 
-.win_control .button:hover, .win_control .menu-button:hover {
-    -fx-background-color: #292929;
-    -fx-pref-height: 1em;
-    -fx-border-width: 0;
-    -fx-background-radius: 0;
-}
+/*.win_control .button:hover, .win_control .menu-button:hover {*/
+/*    -fx-background-color: #292929;*/
+/*    -fx-pref-height: 1em;*/
+/*    -fx-border-width: 0;*/
+/*    -fx-background-radius: 0;*/
+/*}*/
 
 .status-box {
     -fx-spacing: .4em;

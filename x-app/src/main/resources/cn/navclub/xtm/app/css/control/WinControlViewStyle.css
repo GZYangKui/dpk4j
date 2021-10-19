@@ -1,0 +1,17 @@
+.win_control {
+    -fx-border-color: #292929;
+    -fx-border-width: 0 0 .05em 0;
+    -fx-background-radius: .5em .5em 0 0;
+}
+
+.win_control .button {
+    -fx-padding: .7em;
+}
+
+.win_control .button:hover {
+    -fx-background-color: #292929;
+}
+
+.win_control .button, .win_control .menu-button {
+    -fx-background-color: transparent;
+}

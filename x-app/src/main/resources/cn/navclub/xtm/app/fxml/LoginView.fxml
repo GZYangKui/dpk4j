@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            prefWidth="600"
+            prefHeight="450"
+            xmlns:fx="http://javafx.com/fxml"
+            stylesheets="/cn/navclub/xtm/app/css/LoginViewStyle.css">
+    <center>
+        <VBox styleClass="center-box">
+            <VBox styleClass="logo-box">
+                <Label text="dkp4j"/>
+                <Label text="开源、免费、自由部署远程连接工具" styleClass="desc"/>
+            </VBox>
+            <GridPane styleClass="grid-pane">
+                <TextField promptText="账号"/>
+                <TextField promptText="密码" GridPane.rowIndex="1"/>
+                <HBox GridPane.rowIndex="2">
+                    <HBox alignment="CENTER_LEFT">
+                        <Button text="自动登录" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <HBox HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT">
+                        <Button text="忘记密码"/>
+                    </HBox>
+                </HBox>
+                <VBox GridPane.rowIndex="3">
+                    <HBox alignment="CENTER">
+                        <Button text="登录" styleClass="login-btn" onAction="#login"/>
+                    </HBox>
+                </VBox>
+            </GridPane>
+        </VBox>
+    </center>
+</BorderPane>

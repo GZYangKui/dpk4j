@@ -1,0 +1,70 @@
+* {
+    -fx-text-fill: #9f9f9f;
+}
+
+.root {
+    -fx-border-radius: .4em;
+    -fx-background-radius: .4em;
+    -fx-background-color: #121212;
+}
+
+.button {
+    -fx-background-color: transparent;
+}
+
+.center-box {
+    -fx-padding: 2em 1em;
+    -fx-alignment: center;
+}
+
+.logo-box {
+    -fx-spacing: .5em;
+    -fx-padding: 0 0 2em 0;
+    -fx-alignment: center;
+}
+
+.logo-box .label {
+    -fx-font-size: 3em;
+}
+
+.logo-box .desc {
+    -fx-font-size: 1.2em;
+}
+
+.grid-pane {
+    -fx-hgap: 1em;
+    -fx-vgap: 1em;
+    -fx-alignment: center;
+}
+
+.grid-pane {
+    -fx-padding: .5em;
+}
+
+
+.login-btn {
+    -fx-border-width: .1em;
+    -fx-padding: .8em 5em;
+    -fx-border-radius: 3em;
+    -fx-pref-width: 20em;
+    -fx-border-color: #FF8D6B;
+    -fx-background-radius: 3em;
+}
+
+.login-btn:hover {
+    -fx-text-fill: #fff;
+    -fx-background-color: #FF8D6B !important;
+}
+
+.grid-pane .text-field {
+    -fx-text-fill: #FFFFFF;
+    -fx-pref-width: 30em;
+    -fx-pref-height: 3em;
+    -fx-border-radius: .2em;
+    -fx-border-color: #545454;
+    -fx-background-color: transparent;
+}
+
+.grid-pane .text-field:focused {
+    -fx-border-color: #FF806B;
+}
