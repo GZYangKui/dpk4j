@@ -3,7 +3,9 @@ package cn.navclub.xtm.kit.listener;
 
 import cn.navclub.xtm.core.decode.RecordParser;
 import cn.navclub.xtm.core.enums.SocketCMD;
-import cn.navclub.xtm.kit.client.XTClient;
+import cn.navclub.xtm.kit.client.XClient;
+import cn.navclub.xtm.kit.client.impl.TCPClient;
+import cn.navclub.xtm.kit.client.impl.UDPClient;
 import cn.navclub.xtm.kit.enums.XTClientStatus;
 
 import java.util.List;
@@ -15,16 +17,16 @@ public interface XTClientListener {
     List<SocketCMD> EMPTY_ACTIONS = List.of();
 
     /**
-     * {@link  XTClient} 状态发生改变回调此方法
+     * {@link  TCPClient} 状态发生改变回调此方法
      */
-    default void statusHandler(XTClient client, XTClientStatus oldStatus, XTClientStatus newStatus) {
+    default void statusHandler(boolean udp,XClient client, XTClientStatus oldStatus, XTClientStatus newStatus) {
 
     }
 
     /**
-     * 消息收到时触发该函数
+     * 收到TCP消息时触发该函数
      */
-    default void onMessage(XTClient client, RecordParser.Record record) {
+    default void onMessage( boolean udp,XClient client, RecordParser.Record record) {
 
     }
 
@@ -36,20 +38,16 @@ public interface XTClientListener {
     }
 
     /**
-     *
-     * 是否监听{@link XTClient}状态变化
-     *
+     * 是否监听{@link TCPClient}状态变化
      */
-    default boolean lStatus(){
+    default boolean lStatus() {
         return false;
     }
 
     /**
-     *
      * 获取当前listener名称,默认返回当前类名称
-     *
      */
-    default String getName(){
+    default String getName() {
         return this.getClass().getSimpleName();
     }
 

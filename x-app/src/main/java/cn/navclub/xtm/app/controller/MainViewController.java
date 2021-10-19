@@ -9,8 +9,8 @@ import cn.navclub.xtm.app.controller.control.RemoteInfoController;
 import cn.navclub.xtm.core.encode.SocketDataEncode;
 import cn.navclub.xtm.core.enums.SocketCMD;
 import cn.navclub.xtm.kit.XLHelper;
-import cn.navclub.xtm.kit.client.XTClient;
-import cn.navclub.xtm.kit.client.XTClientBuilder;
+import cn.navclub.xtm.kit.client.XClient;
+import cn.navclub.xtm.kit.client.impl.TCPClient;
 
 import cn.navclub.xtm.kit.enums.XTClientStatus;
 import cn.navclub.xtm.kit.listener.XTClientListener;
@@ -37,7 +37,7 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
     @FXML
     private ListView<NavListItem> listView;
 
-    private final XTClient xtClient;
+    private final TCPClient xtClient;
 
     private final ChangeListener<NavListItem> listItemChangeListener = this.listItemChangeListener();
 
@@ -51,16 +51,16 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
         this.getStage().setTitle("朝天椒远程连接");
         this.getStage().initStyle(StageStyle.UNDECORATED);
 
-        this.xtClient = XTClientBuilder
+        this.xtClient = XClient.XClientBuilder
                 .newBuilder(Vertx.vertx())
                 .setHost(XTApp.getInstance().getHost())
                 .setPort(XTApp.getInstance().getPort())
-                .build();
+                .buildTClient();
 
         XLHelper.addListener(this);
 
         this.xtClient.connect().onComplete(it -> {
-            var buffer = SocketDataEncode.restRequest(SocketCMD.HEART_BEAT, 0,null);
+            var buffer = SocketDataEncode.restRequest(SocketCMD.HEART_BEAT, 0, null);
             this.xtClient.send(buffer);
         });
 
@@ -90,7 +90,7 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
     }
 
     @Override
-    public void statusHandler(XTClient client, XTClientStatus oldStatus, XTClientStatus newStatus) {
+    public void statusHandler(boolean udp, XClient client, XTClientStatus oldStatus, XTClientStatus newStatus) {
         var text = newStatus.getMessage();
         final String hexStr;
         if (newStatus == XTClientStatus.CONNECTED || newStatus == XTClientStatus.CONNECTING) {
@@ -115,7 +115,7 @@ public class MainViewController extends AbstractWindowFXMLController<BorderPane>
         return controller;
     }
 
-    public XTClient getXtClient() {
+    public TCPClient getXtClient() {
         return xtClient;
     }
 

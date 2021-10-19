@@ -8,7 +8,8 @@ import cn.navclub.xtm.app.util.UIUtil;
 import cn.navclub.xtm.core.decode.RecordParser;
 import cn.navclub.xtm.core.enums.SocketCMD;
 import cn.navclub.xtm.kit.XLHelper;
-import cn.navclub.xtm.kit.client.XTClient;
+import cn.navclub.xtm.kit.client.XClient;
+import cn.navclub.xtm.kit.client.impl.TCPClient;
 import cn.navclub.xtm.kit.enums.KeyEventAction;
 import cn.navclub.xtm.kit.enums.MouseEventAction;
 import cn.navclub.xtm.kit.listener.XTClientListener;
@@ -138,7 +139,7 @@ public class WinGrabController extends AbstractWindowFXMLController<HBox> implem
     }
 
     @Override
-    public void onMessage(XTClient client, RecordParser.Record record) {
+    public void onMessage(boolean udp, XClient client, RecordParser.Record record) {
         if (record.getCmd() == SocketCMD.MOUSE_ACTIVE) {
             this.mouseEvent(record);
         }

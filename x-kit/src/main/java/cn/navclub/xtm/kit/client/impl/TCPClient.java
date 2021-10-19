@@ -1,8 +1,9 @@
-package cn.navclub.xtm.kit.client;
+package cn.navclub.xtm.kit.client.impl;
 
 import cn.navclub.xtm.core.decode.RecordParser;
 import cn.navclub.xtm.core.encode.SocketDataEncode;
 import cn.navclub.xtm.core.enums.SocketCMD;
+import cn.navclub.xtm.kit.client.XClient;
 import cn.navclub.xtm.kit.enums.XTClientStatus;
 import cn.navclub.xtm.kit.listener.impl.LTDistribute;
 import io.vertx.core.Future;
@@ -13,7 +14,6 @@ import io.vertx.core.net.NetSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -22,13 +22,13 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author yangkui
  */
-public class XTClient {
+public class TCPClient extends XClient {
     private static final long DEFAULT_TIMER_ID = -1;
-    private static final Logger LOG = LoggerFactory.getLogger(XTClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TCPClient.class);
 
     private volatile NetSocket socket;
 
-    private final XTClientBuilder builder;
+    private final XClient.XClientBuilder builder;
 
 
     private final AtomicInteger hbTimers;
@@ -47,7 +47,7 @@ public class XTClient {
     private volatile long reTimeId;
 
 
-    protected XTClient(XTClientBuilder builder) {
+    public TCPClient(XClient.XClientBuilder builder) {
         this.builder = builder;
         this.timeId = DEFAULT_TIMER_ID;
         this.reTimeId = DEFAULT_TIMER_ID;
@@ -96,7 +96,7 @@ public class XTClient {
                     record.getSourceAddr(),
                     record.getData().length()
             );
-            LTDistribute.getInstance().onTPMessage(this, record);
+            LTDistribute.getInstance().onTPMessage(false,this, record);
         });
         this.socket.closeHandler(v -> this.statusChange(XTClientStatus.BROKEN_CONNECT));
         this.socket.handler(parser::handle);
@@ -124,17 +124,16 @@ public class XTClient {
     /**
      * 关闭连接
      */
-    public void close() {
+    public Future<Void> close() {
         //清除定时器
         this.clearTimer();
         //清除重连定时器
         this.vertx.cancelTimer(this.reTimeId);
         this.reTimeId = DEFAULT_TIMER_ID;
         if (this.socket == null) {
-            return;
+            return Future.succeededFuture();
         }
-        this.socket.close();
-        this.socket = null;
+        return this.socket.close();
     }
 
     private void statusChange(XTClientStatus status) {
@@ -150,7 +149,7 @@ public class XTClient {
             this.startReTimer();
         }
         this.statusRef.set(status);
-        LTDistribute.getInstance().onTPStatus(this,oldStatus,status);
+        LTDistribute.getInstance().onTPStatus(false,this,oldStatus,status);
     }
 
     private void startReTimer() {

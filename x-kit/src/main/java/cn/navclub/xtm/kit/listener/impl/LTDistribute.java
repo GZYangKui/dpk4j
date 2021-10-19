@@ -1,7 +1,8 @@
 package cn.navclub.xtm.kit.listener.impl;
 
 import cn.navclub.xtm.core.decode.RecordParser;
-import cn.navclub.xtm.kit.client.XTClient;
+import cn.navclub.xtm.kit.client.XClient;
+import cn.navclub.xtm.kit.client.impl.TCPClient;
 import cn.navclub.xtm.kit.enums.XTClientStatus;
 import cn.navclub.xtm.kit.listener.XTClientListener;
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ public class LTDistribute {
     /**
      * 投递TCP消息到已注册listener
      */
-    public void onTPMessage(XTClient client, RecordParser.Record record) {
+    public void onTPMessage(boolean udp, XClient client, RecordParser.Record record) {
         //投递消息
         for (XTClientListener listener : this.listeners) {
             //判断监听器是否监听该socket命令
@@ -54,7 +55,7 @@ public class LTDistribute {
             Throwable ex = null;
             try {
                 LOG.debug("Delivery message to {} listener", listener.getName());
-                listener.onMessage(client, record);
+                listener.onMessage(udp, client, record);
             } catch (Exception e) {
                 ex = e;
             }
@@ -67,16 +68,16 @@ public class LTDistribute {
     }
 
     /**
-     * 投递当前{@link XTClient}状态改变信息
+     * 投递当前{@link TCPClient}状态改变信息
      */
-    public void onTPStatus(XTClient client, XTClientStatus oldStatus, XTClientStatus newStatus) {
+    public void onTPStatus(boolean udp, XClient client, XTClientStatus oldStatus, XTClientStatus newStatus) {
         for (XTClientListener listener : this.listeners) {
             if (!listener.lStatus()) {
                 return;
             }
             Throwable ex = null;
             try {
-                listener.statusHandler(client, oldStatus, newStatus);
+                listener.statusHandler(udp, client, oldStatus, newStatus);
             } catch (Exception e) {
                 ex = e;
             }
