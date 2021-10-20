@@ -1,15 +1,15 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.31'
+    id "org.jetbrains.kotlin.kapt" version '1.5.31'
 }
-
 targetCompatibility = 11
 sourceCompatibility = 11
 
 mainClassName = 'cn.navclub.xt.server.Launcher'
 
-
-repositories {
-    mavenCentral()
+kapt {
+    useBuildCache = false
+    keepJavacAnnotationProcessors = true
 }
 
 jar {
@@ -23,6 +23,10 @@ jar {
     manifest {
         attributes 'Main-Class': "${mainClassName}Kt"
     }
+}
+
+compileJava {
+    options.annotationProcessorPath = configurations.annotationProcessor
 }
 
 sourceSets {
@@ -44,6 +48,9 @@ sourceSets {
 
 dependencies {
     implementation project(":x-core")
-    implementation group: 'io.vertx', name: 'vertx-lang-kotlin', version: "${rootProject.ext.vertxVersion}"
+    implementation group: 'io.vertx', name: 'vertx-codegen', version: "${rootProject.ext.vertxVersion}"
+    implementation group: 'io.vertx', name: 'vertx-service-proxy', version: "${rootProject.ext.vertxVersion}"
     implementation group: 'io.vertx', name: 'vertx-lang-kotlin-coroutines', version: "${rootProject.ext.vertxVersion}"
+
+    kapt "io.vertx:vertx-codegen:${rootProject.ext.vertxVersion}"
 }

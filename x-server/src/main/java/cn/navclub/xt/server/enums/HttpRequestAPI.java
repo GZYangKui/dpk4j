@@ -2,7 +2,8 @@ package cn.navclub.xt.server.enums;
 
 public enum HttpRequestAPI {
     UNKNOWN("/unknown",APPAction.UNKNOWN),
-    REQUEST_PUBLISH("/obs/publish",APPAction.REQUEST_PUBLISH);
+    REQUEST_PUBLISH("/obs/publish",APPAction.REQUEST_PUBLISH),
+    SSO_LOGIN("/sso/login",APPAction.USER_LOGIN);
 
     private final String url;
     private final APPAction action;

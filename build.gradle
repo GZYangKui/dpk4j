@@ -10,8 +10,8 @@ if (osName.contains("linux")) {
 }
 platform += "-x86_64"
 ext {
-    //vertx
-    vertxVersion = '4.1.4'
+    //vertx version
+    vertxVersion = '4.1.5'
     //当前系统类型
     targetPlatform = platform
     //全局设置javacv平台
@@ -31,6 +31,7 @@ subprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
+        options.annotationProcessorPath = configurations.annotationProcessor
     }
 
     dependencies {

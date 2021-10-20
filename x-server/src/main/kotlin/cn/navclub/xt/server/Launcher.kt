@@ -13,6 +13,8 @@ fun main(): Unit = runBlocking {
         vertx.deployVerticle("kt:cn.navclub.xt.server.gateway.WebVerticel").await()
         vertx.deployVerticle("kt:cn.navclub.xt.server.gateway.UDPVerticle").await()
         vertx.deployVerticle("kt:cn.navclub.xt.server.verticle.OBSVerticel").await()
+        vertx.deployVerticle("kt:cn.navclub.xt.server.verticle.SSOVerticel").await()
+
     } catch (e: Exception) {
         println("Vertx application startup fail cause:${e.message}")
         vertx.close().await()
