@@ -2,15 +2,16 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.31'
     id "org.jetbrains.kotlin.kapt" version '1.5.31'
 }
+
 targetCompatibility = 11
 sourceCompatibility = 11
 
 mainClassName = 'cn.navclub.xt.server.Launcher'
 
-kapt {
-    useBuildCache = false
-    keepJavacAnnotationProcessors = true
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions.jvmTarget = 11
 }
+
 
 jar {
     archivesBaseName = "dkp4j-server"
@@ -23,10 +24,6 @@ jar {
     manifest {
         attributes 'Main-Class': "${mainClassName}Kt"
     }
-}
-
-compileJava {
-    options.annotationProcessorPath = configurations.annotationProcessor
 }
 
 sourceSets {
@@ -48,9 +45,23 @@ sourceSets {
 
 dependencies {
     implementation project(":x-core")
-    implementation group: 'io.vertx', name: 'vertx-codegen', version: "${rootProject.ext.vertxVersion}"
+
+    compileOnly group: 'io.vertx', name: 'vertx-codegen', version: "${rootProject.ext.vertxVersion}"
+    compileOnly group: 'io.vertx', name: 'vertx-lang-kotlin-gen', version: "${rootProject.ext.vertxVersion}"
     implementation group: 'io.vertx', name: 'vertx-service-proxy', version: "${rootProject.ext.vertxVersion}"
     implementation group: 'io.vertx', name: 'vertx-lang-kotlin-coroutines', version: "${rootProject.ext.vertxVersion}"
 
-    kapt "io.vertx:vertx-codegen:${rootProject.ext.vertxVersion}"
+    kapt("io.vertx:vertx-codegen:${rootProject.ext.vertxVersion}:processor")
+    kapt("io.vertx:vertx-service-proxy:${rootProject.ext.vertxVersion}")
+    kapt("io.vertx:vertx-lang-kotlin-gen:${rootProject.ext.vertxVersion}")
+}
+
+
+kapt {
+
+    arguments {
+        arg("codegen.output", "${project.projectDir}/src/main/generated")
+        arg("kapt.kotlin.generated", "/")
+        arg("codegen.kotlin.coroutines", "true")
+    }
 }

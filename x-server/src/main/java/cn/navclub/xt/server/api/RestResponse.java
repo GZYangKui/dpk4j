@@ -8,7 +8,7 @@ public class RestResponse {
 
     public static <T> CommonResult<T> rest(int code, T data, String message) {
         var result = new CommonResult<T>();
-        result.setCode(OK);
+        result.setCode(code);
         result.setData(data);
         result.setMessage(message);
         return result;
